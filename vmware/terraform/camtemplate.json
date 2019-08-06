@@ -1,0 +1,62 @@
+{
+    "name": "Openshift 3.11 Installation",
+    "description": "This template will deploy an enterprise version of Openshift 3.11 cluster",
+    "version": "1.0",
+    "imageUrl": "",
+    "image": "",
+    "type": "prebuilt",
+    "status": "active",
+    "manifest": {
+      "template_type": "Terraform",
+      "template_format": "HCL",
+      "template_provider": "VMware vSphere",
+      "template": {
+        "templateData": "",
+        "templateVariables": "",
+        "templateOutput": ""
+      },
+      "template_source": {
+        "githubRepoUrl": "",
+        "githubAccessToken": "",
+        "relativePathToTemplateFolder": "vmware/terraform",
+        "templateFileName": "main.tf"
+      }
+    },
+    "metadata": {
+      "displayName": "Openshift 3.11 cluster",
+      "providerDisplayName": "VMware vSphere",
+      "longDescription": "This template will deploy a Openshift 3.11 cluster",
+      "bullets": [{
+    "title": "Clouds",
+    "description": " VMware vSphere<br>"},
+{
+    "title": "Operating Systems Supported",
+    "description": "Redhat 7.4<br>"},
+{
+    "title": "Topology",
+    "description": "Medium/HA<br>"},
+{
+    "title": "Software Deployed",
+    "description": "Openshift 3.11<br>"},
+{
+    "title": "Default Virtual Machine Settings",
+    "description": " vCPU 8, Memory (GB) 16, Disk (GB) 400<br>"},
+{
+    "title": "Usage and Special Notes",
+    "description": ""
+}
+],
+      "featuredImageUrl": "",
+      "imageUrl": "",
+      "mediumImageUrl": "",
+      "smallImageUrl": "",
+      "documentationUrl": "",
+      "termsUrl": "",
+      "media": [
+      ]
+    },
+    "toolchain": {
+      "git": "https://github.com/ibmcam/cam-toolchain"
+    }
+}
+
