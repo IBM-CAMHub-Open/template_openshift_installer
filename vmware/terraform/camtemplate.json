@@ -1,6 +1,6 @@
 {
-    "name": "Openshift 3.11 Installation",
-    "description": "This template will deploy an enterprise version of Openshift 3.11 cluster",
+    "name": "OpenShift Container Platform Enterprise Installation",
+    "description": "This template will deploy an enterprise HA-ready version of OpenShift Container Platform",
     "version": "1.0",
     "imageUrl": "",
     "image": "",
@@ -23,9 +23,9 @@
       }
     },
     "metadata": {
-      "displayName": "Openshift 3.11 cluster",
+      "displayName": "OpenShift Container Platform Enterprise Installation",
       "providerDisplayName": "VMware vSphere",
-      "longDescription": "This template will deploy a Openshift 3.11 cluster",
+      "longDescription": "This template will deploy an enterprise, HA-ready version of OpenShift Container Platform",
       "bullets": [{
     "title": "Clouds",
     "description": " VMware vSphere<br>"},
@@ -37,7 +37,7 @@
     "description": "Medium/HA<br>"},
 {
     "title": "Software Deployed",
-    "description": "Openshift 3.11<br>"},
+    "description": "OpenShift<br>"},
 {
     "title": "Default Virtual Machine Settings",
     "description": " vCPU 8, Memory (GB) 16, Disk (GB) 400<br>"},
