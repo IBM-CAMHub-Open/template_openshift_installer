@@ -296,10 +296,11 @@ module "host_prepare" {
   vm_os_password       = "${var.vm_os_password}"
   rh_user              = "${var.rh_user}"
   rh_password          = "${var.rh_password}"
-  vm_ipv4_address_list = "${compact(split(",", replace(join(",",distinct(concat(values(var.infra_hostname_ip), values(var.master_hostname_ip), values(var.etcd_hostname_ip), values(var.compute_hostname_ip), values(var.lb_hostname_ip)))),"0.0.0.0", "" )))}"
-  vm_hostname_list     = "${join(",",distinct(concat(keys(var.infra_hostname_ip), keys(var.master_hostname_ip), keys(var.etcd_hostname_ip), keys(var.compute_hostname_ip), keys(var.lb_hostname_ip))))}"
+  vm_ipv4_address_list = "${compact(split(",", replace(join(",",distinct(concat(values(var.infra_hostname_ip), values(var.master_hostname_ip), values(var.etcd_hostname_ip), values(var.lb_hostname_ip)))),"0.0.0.0", "" )))}"
+  vm_hostname_list     = "${join(",",distinct(concat(keys(var.infra_hostname_ip), keys(var.master_hostname_ip), keys(var.etcd_hostname_ip), keys(var.lb_hostname_ip))))}"
   domain_name          = "${var.vm_domain}"
   installer_hostname   = "${element(keys(var.master_hostname_ip), 0)}"
+  compute_hostname     = "${element(keys(var.compute_hostname_ip), 0)}"
   random               = "${random_string.random-dir.result}"
   #######
   bastion_host        = "${var.bastion_host}"
@@ -308,11 +309,35 @@ module "host_prepare" {
   bastion_port        = "${var.bastion_port}"
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"      
-  dependsOn           = "${module.deployVM_compute.dependsOn}+${module.deployVM_master.dependsOn}+${module.deployVM_infra.dependsOn}"
+  dependsOn           = "${module.deployVM_master.dependsOn}+${module.deployVM_infra.dependsOn}+${module.deployVM_compute.dependsOn}"
+}
+
+module "host_prepare_compute" {
+  source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//host_prepare"
+  
+  private_key          = "${length(var.os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.os_private_ssh_key)}"}"
+  vm_os_user           = "${var.vm_os_user}"
+  vm_os_password       = "${var.vm_os_password}"
+  rh_user              = "${var.rh_user}"
+  rh_password          = "${var.rh_password}"
+  vm_ipv4_address_list = "${values(var.compute_hostname_ip)}"
+  vm_hostname_list     = "${join(",", keys(var.compute_hostname_ip))}"
+  domain_name          = "${var.vm_domain}"
+  installer_hostname   = "${element(keys(var.master_hostname_ip), 0)}"
+  compute_hostname     = "${element(keys(var.compute_hostname_ip), 0)}"
+  random               = "${random_string.random-dir.result}"
+  #######
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"      
+  dependsOn           = "${module.deployVM_master.dependsOn}+${module.deployVM_infra.dependsOn}+${module.deployVM_compute.dependsOn}"
 }
 
 module "config_inventory" {
-  source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//config_inventory"
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//config_inventory"
   
   private_key          = "${length(var.os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.os_private_ssh_key)}"}"
   vm_os_user           = "${var.vm_os_user}"
@@ -339,11 +364,11 @@ module "config_inventory" {
   bastion_port        = "${var.bastion_port}"
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"      
-  dependsOn           = "${module.host_prepare.dependsOn}"
+  dependsOn           = "${module.host_prepare.dependsOn}+${module.host_prepare_compute.dependsOn}"
 }
 
 module "run_installer" {
-  source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//run_installer"
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//run_installer"
   
   private_key          = "${length(var.os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.os_private_ssh_key)}"}"
   vm_os_user           = "${var.vm_os_user}"
@@ -361,4 +386,45 @@ module "run_installer" {
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"      
   dependsOn           = "${module.config_inventory.dependsOn}"
+}
+
+module "generate_kubeconfig" {
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//config_output"  
+  vm_os_private_key    = "${length(var.os_private_ssh_key) == 0 ? "${base64encode(tls_private_key.generate.private_key_pem)}" : "${var.os_private_ssh_key}"}"
+  vm_os_user           = "${var.vm_os_user}"
+  vm_os_password       = "${var.vm_os_password}"
+  master_node_ip       = "${element(values(var.master_hostname_ip), 0)}"
+  openshift_user       = "${var.openshift_user}"
+  openshift_port	   = "8443"
+  openshift_server	   = "${var.enable_lb == "false" ? element(keys(var.master_hostname_ip),0) : element(keys(var.lb_hostname_ip),0)}.${var.vm_domain}"
+  #######
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"      
+  dependsOn           = "${module.run_installer.dependsOn}"
+}
+
+module "scale_node" {
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//scale_node"
+  
+  private_key          = "${length(var.os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.os_private_ssh_key)}"}"
+  vm_os_user           = "${var.vm_os_user}"
+  vm_os_password       = "${var.vm_os_password}"
+  master_vm_ipv4_address     = "${element(values(var.master_hostname_ip), 0)}"
+  compute_vm_hostname        = "${keys(var.compute_hostname_ip)}"
+  compute_vm_ipv4_address    = "${values(var.compute_hostname_ip)}"
+  domain_name                = "${var.vm_domain}"
+
+  random              = "${random_string.random-dir.result}"
+  #######
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"      
+  dependsOn           = "${module.run_installer.dependsOn}"
 }

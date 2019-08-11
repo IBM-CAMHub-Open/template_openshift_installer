@@ -5,7 +5,28 @@
       "label": "Bastion Data"
     }
   ], 
-  "output_datatypes": [],  
+  "output_datatypes": [
+  	{
+      "name": "kubeconfig",
+      "dataobject": {
+        "name": "${template_output_params.cluster_name}",
+        "attributes": [
+          {
+            "name": "cluster_name",
+            "value": "${template_output_params.cluster_name}"
+          },
+          {
+            "name": "cluster_config",
+            "value": "${template_output_params.cluster_config}"
+          },
+          {
+            "name": "cluster_certificate_authority",
+            "value": "${template_output_params.cluster_certificate_authority}"
+          }
+        ]
+      }
+    }
+  ],  
   "input_groups": [
     {
       "name": "cloud",
