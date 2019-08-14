@@ -360,17 +360,6 @@
       "label": "Enable GlusterFS",
       "hidden": false,
       "immutable": false,
-      "options": [
-        {
-          "value": "true",
-          "label": "true",
-          "default": true
-        },
-        {
-          "value": "false",
-          "label": "false"
-        }
-      ],
       "group_name": "openshift_compute_node_on_vmware"
     },
     {
