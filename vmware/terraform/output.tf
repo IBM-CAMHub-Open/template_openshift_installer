@@ -1,5 +1,5 @@
 output "openshift_url" {
-  value = "https://${element(keys(var.master_hostname_ip),0)}.${var.vm_domain}:8443"
+  value = "https://${element(keys(var.master_node_hostname_ip),0)}.${var.vm_domain}:8443"
 }
 
 output "openshift_user" {
@@ -11,7 +11,7 @@ output "openshift_password" {
 }
 
 output "openshift_master_ip" {
-  value = "${element(values(var.master_hostname_ip),0)}"
+  value = "${element(values(var.master_node_hostname_ip),0)}"
 }
 
 output "cluster_config"{
