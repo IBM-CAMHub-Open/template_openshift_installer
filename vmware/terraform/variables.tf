@@ -43,7 +43,6 @@ variable "master_node_disk1_keep_on_remove" {
 # lb Node
 variable "enable_lb" {
   type    = "string"
-  default = "false"
 }
 
 variable "lb_node_hostname_ip" {
@@ -122,7 +121,7 @@ variable "compute_node_disk2_keep_on_remove" {
   type = "string"
 }
 
-variable "compute_node_enable_glusterFS" {
+variable "compute_node_enable_glusterfs" {
   type = "string"
 }
 
@@ -144,7 +143,6 @@ variable "network" {
 
 variable "adapter_type" {
   type    = "string"
-  default = "vmxnet3"
 }
 
 variable "vm_folder" {
@@ -161,7 +159,6 @@ variable "dns_suffixes" {
 
 variable "vm_clone_timeout" {
   description = "The timeout, in minutes, to wait for the virtual machine clone to complete."
-  default = "30"
 }
 
 variable "datacenter" {

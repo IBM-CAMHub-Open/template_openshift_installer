@@ -198,7 +198,7 @@ module "deployVM_compute" {
   vm_disk1_size           = "${var.compute_node_disk1_size}"
   vm_disk1_datastore      = "${var.datastore}"
   vm_disk1_keep_on_remove = "${var.compute_node_disk1_keep_on_remove}"
-  vm_disk2_enable         = "${var.compute_node_enable_glusterFS && var.compute_node_disk2_enable}"
+  vm_disk2_enable         = "${var.compute_node_enable_glusterfs && var.compute_node_disk2_enable}"
   vm_disk2_size           = "${var.compute_node_disk2_size}"
   vm_disk2_datastore      = "${var.datastore}"
   vm_disk2_keep_on_remove = "${var.compute_node_disk2_keep_on_remove}"
@@ -324,7 +324,7 @@ module "config_inventory" {
   master_node_ip            = "${element(values(var.master_node_hostname_ip), 0)}"
   rh_user                   = "${var.rh_user}"
   rh_password               = "${var.rh_password}"
-  compute_node_enable_glusterFS  = "${var.compute_node_enable_glusterFS}"
+  compute_node_enable_glusterfs  = "${var.compute_node_enable_glusterfs}"
   random                    = "${random_string.random-dir.result}"
   
   #######
