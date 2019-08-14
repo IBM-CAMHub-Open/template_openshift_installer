@@ -122,9 +122,8 @@ variable "compute_node_disk2_keep_on_remove" {
   type = "string"
 }
 
-variable "compute_enable_glusterFS" {
+variable "compute_node_enable_glusterFS" {
   type = "string"
-  default = "true"
 }
 
 variable "vm_ipv4_gateway" {
