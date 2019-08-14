@@ -358,26 +358,6 @@ module "run_installer" {
   dependsOn                 = "${module.config_inventory.dependsOn}"
 }
 
-module "generate_kubeconfig" {
-  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//config_output"  
-  vm_os_private_key    = "${length(var.vm_os_private_ssh_key) == 0 ? "${base64encode(tls_private_key.generate.private_key_pem)}" : "${var.vm_os_private_ssh_key}"}"
-  vm_os_user           = "${var.vm_os_user}"
-  vm_os_password       = "${var.vm_os_password}"
-  master_node_ip       = "${element(values(var.master_node_hostname_ip), 0)}"
-  openshift_user       = "${var.openshift_user}"
-  openshift_port	     = "8443"
-  openshift_server	   = "${var.enable_lb == "false" ? element(keys(var.master_node_hostname_ip),0) : element(keys(var.lb_node_hostname_ip),0)}.${var.vm_domain_name}"
-  
-  #######
-  bastion_host         = "${var.bastion_host}"
-  bastion_user         = "${var.bastion_user}"
-  bastion_private_key  = "${var.bastion_private_key}"
-  bastion_port         = "${var.bastion_port}"
-  bastion_host_key     = "${var.bastion_host_key}"
-  bastion_password     = "${var.bastion_password}"      
-  dependsOn            = "${module.run_installer.dependsOn}"
-}
-
 module "scale_node" {
   source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//scale_node"
   
