@@ -1,109 +1,43 @@
 #infra Node
-variable "infra_hostname_ip" {
+variable "infra_node_hostname_ip" {
   type = "map"
 }
 
-variable "infra_vcpu" {
+variable "infra_node_vcpu" {
   type    = "string"
-  default = "4"
 }
 
-variable "infra_memory" {
+variable "infra_node_memory" {
   type    = "string"
-  default = "8192"
 }
 
-variable "infra_vm_ipv4_gateway" {
+variable "infra_node_disk1_size" {
   type = "string"
 }
 
-variable "infra_vm_ipv4_prefix_length" {
+variable "infra_node_disk1_keep_on_remove" {
   type = "string"
-}
-
-variable "infra_vm_disk1_size" {
-  type = "string"
-
-  default = "150"
-}
-
-variable "infra_vm_disk1_keep_on_remove" {
-  type = "string"
-
-  default = "false"
-}
-
-variable "infra_vm_disk2_enable" {
-  type = "string"
-
-  default = "false"
-}
-
-variable "infra_vm_disk2_size" {
-  type = "string"
-
-  default = "50"
-}
-
-variable "infra_vm_disk2_keep_on_remove" {
-  type = "string"
-
-  default = "false"
 }
 
 # Master Nodes
-variable "master_hostname_ip" {
+variable "master_node_hostname_ip" {
   type = "map"
 }
 
-variable "master_vcpu" {
-  type = "string"
-
-  default = "8"
-}
-
-variable "master_memory" {
-  type = "string"
-
-  default = "16384"
-}
-
-variable "master_vm_ipv4_gateway" {
+variable "master_node_vcpu" {
   type = "string"
 }
 
-variable "master_vm_ipv4_prefix_length" {
+variable "master_node_memory" {
   type = "string"
 }
 
-variable "master_vm_disk1_size" {
+variable "master_node_disk1_size" {
   type = "string"
-
-  default = "200"
 }
 
-variable "master_vm_disk1_keep_on_remove" {
+variable "master_node_disk1_keep_on_remove" {
   type = "string"
-
-  default = "false"
-}
-
-variable "master_vm_disk2_enable" {
-  type = "string"
-
-  default = "false"
-}
-
-variable "master_vm_disk2_size" {
-  type = "string"
-
-  default = "50"
-}
-
-variable "master_vm_disk2_keep_on_remove" {
-  type = "string"
-
-  default = "false"
 }
 
 # lb Node
@@ -112,186 +46,104 @@ variable "enable_lb" {
   default = "false"
 }
 
-variable "lb_hostname_ip" {
+variable "lb_node_hostname_ip" {
   type = "map"
 }
 
-variable "lb_vcpu" {
-  type = "string"
-
-  default = "8"
-}
-
-variable "lb_memory" {
-  type = "string"
-
-  default = "16384"
-}
-
-variable "lb_vm_ipv4_gateway" {
+variable "lb_node_vcpu" {
   type = "string"
 }
 
-variable "lb_vm_ipv4_prefix_length" {
+variable "lb_node_memory" {
   type = "string"
 }
 
-variable "lb_vm_disk1_size" {
-  type = "string"
 
-  default = "200"
+variable "lb_node_disk1_size" {
+  type = "string"
 }
 
-variable "lb_vm_disk1_keep_on_remove" {
+variable "lb_node_disk1_keep_on_remove" {
   type = "string"
-
-  default = "false"
 }
 
-variable "lb_vm_disk2_enable" {
-  type = "string"
-
-  default = "false"
-}
-
-variable "lb_vm_disk2_size" {
-  type = "string"
-
-  default = "50"
-}
-
-variable "lb_vm_disk2_keep_on_remove" {
-  type = "string"
-
-  default = "false"
-}
 
 # etcd Nodes
-variable "etcd_hostname_ip" {
+variable "etcd_node_hostname_ip" {
   type = "map"
 }
 
-variable "etcd_vcpu" {
-  type = "string"
-
-  default = "8"
-}
-
-variable "etcd_memory" {
-  type = "string"
-
-  default = "16384"
-}
-
-variable "etcd_vm_ipv4_gateway" {
+variable "etcd_node_vcpu" {
   type = "string"
 }
 
-variable "etcd_vm_ipv4_prefix_length" {
+variable "etcd_node_memory" {
   type = "string"
 }
 
-variable "etcd_vm_disk1_size" {
+variable "etcd_node_disk1_size" {
   type = "string"
-
-  default = "200"
 }
 
-variable "etcd_vm_disk1_keep_on_remove" {
+variable "etcd_node_disk1_keep_on_remove" {
   type = "string"
-
-  default = "false"
-}
-
-variable "etcd_vm_disk2_enable" {
-  type = "string"
-
-  default = "false"
-}
-
-variable "etcd_vm_disk2_size" {
-  type = "string"
-
-  default = "50"
-}
-
-variable "etcd_vm_disk2_keep_on_remove" {
-  type = "string"
-
-  default = "false"
 }
 
 # computes Nodes
-variable "compute_hostname_ip" {
+variable "compute_node_hostname_ip" {
   type = "map"
 }
 
-variable "compute_vcpu" {
-  type = "string"
-
-  default = "16"
-}
-
-variable "compute_memory" {
-  type = "string"
-
-  default = "32768"
-}
-
-variable "compute_vm_ipv4_gateway" {
+variable "compute_node_vcpu" {
   type = "string"
 }
 
-variable "compute_vm_ipv4_prefix_length" {
+variable "compute_node_memory" {
   type = "string"
 }
 
-variable "compute_vm_disk1_size" {
+variable "compute_node_disk1_size" {
   type = "string"
-
-  default = "200"
 }
 
-variable "compute_vm_disk1_keep_on_remove" {
+variable "compute_node_disk1_keep_on_remove" {
   type = "string"
-
-  default = "false"
 }
 
-variable "compute_vm_disk2_enable" {
+variable "compute_node_disk2_enable" {
   type = "string"
-
-  default = "true"
 }
 
-variable "compute_vm_disk2_size" {
+variable "compute_node_disk2_size" {
   type = "string"
-
-  default = "85"
 }
 
-variable "compute_vm_disk2_keep_on_remove" {
+variable "compute_node_disk2_keep_on_remove" {
   type = "string"
-
-  default = "false"
 }
 
 variable "compute_enable_glusterFS" {
   type = "string"
-
   default = "true"
 }
 
-# VM Generic Items
-variable "vm_domain" {
+variable "vm_ipv4_gateway" {
   type = "string"
 }
 
-variable "vm_network_interface_label" {
+variable "vm_ipv4_netmask" {
   type = "string"
 }
 
-variable "vm_adapter_type" {
+variable "vm_domain_name" {
+  type = "string"
+}
+
+variable "network" {
+  type = "string"
+}
+
+variable "adapter_type" {
   type    = "string"
   default = "vmxnet3"
 }
@@ -300,11 +152,11 @@ variable "vm_folder" {
   type = "string"
 }
 
-variable "vm_dns_servers" {
+variable "dns_servers" {
   type = "list"
 }
 
-variable "vm_dns_suffixes" {
+variable "dns_suffixes" {
   type = "list"
 }
 
@@ -313,15 +165,15 @@ variable "vm_clone_timeout" {
   default = "30"
 }
 
-variable "vsphere_datacenter" {
+variable "datacenter" {
   type = "string"
 }
 
-variable "vsphere_resource_pool" {
+variable "resource_pool" {
   type = "string"
 }
 
-variable "vm_template" {
+variable "vm_image_template" {
   type = "string"
 }
 
@@ -333,25 +185,16 @@ variable "vm_os_password" {
   type = "string"
 }
 
-variable "vm_disk1_datastore" {
+variable "datastore" {
   type = "string"
 }
 
-variable "vm_disk2_datastore" {
+variable "vm_os_private_ssh_key" {
   type = "string"
 }
 
-# SSH KEY Information
-variable "os_private_ssh_key" {
+variable "vm_os_public_ssh_key" {
   type = "string"
-
-  default = ""
-}
-
-variable "os_public_ssh_key" {
-  type = "string"
-
-  default = ""
 }
 
 variable "rh_user" {

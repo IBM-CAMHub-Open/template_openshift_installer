@@ -3,6 +3,30 @@
     {
       "name": "bastionhost",
       "label": "Bastion Data"
+    },
+    {
+      "name": "openshift_master_node_on_vmware",
+      "label": "OpenShift Container Platform Master Node on VMware"
+    },
+    {
+      "name": "openshift_infra_node_on_vmware",
+      "label": "OpenShift Container Platform Infrastructure Node on VMware"
+    },
+    {
+      "name": "openshift_etcd_node_on_vmware",
+      "label": "OpenShift Container Platform ETCD Node on VMware"
+    },
+    {
+      "name": "openshift_compute_node_on_vmware",
+      "label": "OpenShift Container Platform Compute Node on VMware"
+    },
+    {
+      "name": "openshift_lb_node_on_vmware",
+      "label": "OpenShift Container Platform LB Node on VMware"
+    },
+    {
+      "name": "vsphere_managed_inventory_definition",
+      "label": "vSphere Managed Inventory Definition"
     }
   ], 
   "output_datatypes": [
@@ -29,32 +53,32 @@
   ],  
   "input_groups": [
     {
-      "name": "cloud",
-      "label": "Cloud Input Variables"
+      "name": "vsphere_managed_inventory_definition",
+      "label": "vSphere Managed Inventory Definition"
     },
     {
-      "name": "generalvmtemplate",
-      "label": "Openshift Template Settings"
+      "name": "rh_ocp",
+      "label": "RedHat Settings"
     },
     {
-      "name": "mastervirtualmachine",
-      "label": "Master Nodes Input Settings"
+      "name": "openshift_master_node_on_vmware",
+      "label": "OpenShift Master Node Settings"
     },
     {
-      "name": "etcdvirtualmachine",
-      "label": "Etcd Node Input Settings"
+      "name": "openshift_infra_node_on_vmware",
+      "label": "OpenShift Infrastructure Node Settings"
     },
     {
-      "name": "computevirtualmachine",
-      "label": "Compute Nodes Input Settings"
+      "name": "openshift_etcd_node_on_vmware",
+      "label": "OpenShift ETCD Node Settings"
     },
     {
-      "name": "infravirtualmachine",
-      "label": "Infrastructure Nodes Input Settings"
+      "name": "openshift_compute_node_on_vmware",
+      "label": "OpenShift Compute Node Settings"
     },
     {
-      "name": "lbvirtualmachine",
-      "label": "Load Balancer Node Input Settings"
+      "name": "openshift_lb_node_on_vmware",
+      "label": "OpenShift LB Node Settings"
     }
   ],
   "template_input_params": [
@@ -117,15 +141,223 @@
       "label": "Bastion host key",
       "secured": false,
       "required": false
-    },          
+    },
     {
-      "name": "compute_enable_glusterFS",
-      "description": "Enable / Disable the installation of Gluster File System in OpenShift Installation",
-      "default": "true",
+      "name": "datacenter",
+      "default":"${vsphere_managed_inventory_definition.datacenter}",
+      "description": "The name of a datacenter in which to create the virtual machine and other assets.",
       "type": "string",
       "required": true,
       "secured": false,
-      "label": "Enable OpenShift GlusterFS on Compute Nodes",
+      "label": "Datacenter Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "resource_pool",
+      "default":"${vsphere_managed_inventory_definition.resource_pool}",
+      "description": "Name of the default resource pool for the cluster. Must be specified as 'cluster_name/resource_pool'",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Resource Pool Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_folder",
+      "default":"${vsphere_managed_inventory_definition.vm_folder}",
+      "description": "vSphere folder name to create the virtual vachine.",
+      "type": "string",
+      "required": false,
+      "secured": false,
+      "label": "Virtual Machine Folder Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_image_template",
+      "default":"${vsphere_managed_inventory_definition.vm_image_template}",
+      "description": "Virtual machine image template name. If it is in a folder then include folder name as follows 'folder_name/image_template_name'",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Virtual Machine Image Template Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_domain_name",
+      "default":"${vsphere_managed_inventory_definition.vm_domain_name}",
+      "description": "Virtual machine domain name.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Virtual Machine Domain Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_os_user",
+      "description": "The user name to connect to the virtual machine.",
+      "default":"${vsphere_managed_inventory_definition.vm_os_user}",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Virtual Machine Template User Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    },
+    {
+      "name": "vm_os_password",
+      "description": "The user password to connect to the virtual machine.",
+      "default":"${vsphere_managed_inventory_definition.vm_os_password}",
+      "type": "string",
+      "required": false,
+      "secured": true,
+      "label": "Virtual Machine Template User Password",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    },
+    {
+      "name": "vm_os_private_ssh_key",
+      "description": "The user private key to connect to the virtual machine.",
+      "default": "${vsphere_managed_inventory_definition.vm_os_private_ssh_key}",
+      "type": "string",
+      "required": false,
+      "secured": true,
+      "label": "Virtual Machine Template User Private Key (base64 encoded)",
+      "hidden": false ,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    },
+    {
+      "name": "vm_os_public_ssh_key",
+      "description": "Virtual Machine Template User Public Key to be added to the VM",
+      "default": "${vsphere_managed_inventory_definition.vm_os_public_ssh_key}",
+      "type": "string",
+      "required": false,
+      "secured": false,
+      "label": "Virtual Machine Template User Public Key",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    },	
+    {
+      "name": "datastore",
+      "default":"${vsphere_managed_inventory_definition.datastore}",
+      "description": "Virtual machine datastore name",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Datastore Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "network",
+      "default":"${vsphere_managed_inventory_definition.network}",
+      "description": "vSphere Network name.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Network name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "adapter_type",
+      "default":"${vsphere_managed_inventory_definition.adapter_type}",
+      "description": "Network adapter type for vNIC Configuration",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Network Adapter Type",
+      "hidden": true,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "dns_servers",
+      "default":"${vsphere_managed_inventory_definition.dns_servers}",
+      "description": "A list of DNS servers to add on the virtual machine.",
+      "type": "list",
+      "required": true,
+      "secured": false,
+      "label": "DNS Servers",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "dns_suffixes",
+      "default":"${vsphere_managed_inventory_definition.dns_suffixes}",
+      "description": "A list of DNS search domains to add to the DNS configuration on the virtual machine.",
+      "type": "list",
+      "required": true,
+      "secured": false,
+      "label": "DNS Suffixes",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_ipv4_gateway",
+      "default":"${vsphere_managed_inventory_definition.vm_ipv4_gateway}",
+      "description": "IPv4 Gateway Address for network customization on the virtual machine.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "IPv4 Gateway",
+      "hidden": false,
+      "immutable": false,
+      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
+      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway",
+      "group_name": "vsphere_managed_inventory_definition"
+    }, 
+    {
+      "name": "vm_ipv4_netmask",
+      "default":"${vsphere_managed_inventory_definition.vm_ipv4_netmask}",
+      "description": "Integer value between 1 and 32 for the prefix length (CIDR) to use when statically assigning an IPv4 address",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "IPv4 Netmask (CIDR)",
+      "hidden": false,
+      "immutable": false,
+      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$",
+      "regexdesc": "Provide an integer value between 1 and 32",
+      "group_name": "vsphere_managed_inventory_definition"
+    },
+    {
+      "name": "vm_clone_timeout",
+      "description": "The timeout, in minutes, to wait for the virtual machine clone to complete.",
+      "default": "${vsphere_managed_inventory_definition.vm_clone_timeout}",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Virtual Machine Clone Timeout",
+      "hidden": true,
+      "immutable": false,
+      "group_name": "vsphere_managed_inventory_definition"
+    },
+    {
+      "name": "compute_node_enable_gluster_fs",
+      "description": "Indicates wether GlusterFS storage should be enabled on compute nodes",
+      "default": "${openshift_compute_node_on_vmware.enable_gluster_fs}",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Enable GlusterFS",
       "hidden": false,
       "immutable": false,
       "options": [
@@ -139,10 +371,10 @@
           "label": "false"
         }
       ],
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_hostname_ip",
+      "name": "compute_node_hostname_ip",
       "description": "Compute Node Hostname and IP Address",
       "default": {
         "Hostname": "0.0.0.0"
@@ -153,116 +385,91 @@
       "label": "Compute Node Hostname and IP Address",
       "hidden": false,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_memory",
+      "name": "compute_node_memory",
       "description": "Compute Node Memory Allocation (mb)",
-      "default": "32768",
+      "default": "${openshift_compute_node_on_vmware.memory}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Compute Node Memory Allocation (mb)",
       "hidden": false,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vcpu",
+      "name": "compute_node_vcpu",
       "description": "Compute Node vCPU Allocation",
-      "default": "16",
+      "default": "${openshift_compute_node_on_vmware.vcpu}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Compute Node vCPU Allocation",
       "hidden": false,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_disk1_keep_on_remove",
-      "default": "false",
+      "name": "compute_node_disk1_keep_on_remove",
+      "default": "${openshift_compute_node_on_vmware.disk1_keep_on_remove}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "compute_vm_disk1_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_disk1_size",
+      "name": "compute_node_disk1_size",
       "description": "Compute Node Disk Size Disk 1 (GB)",
-      "default": "200",
+      "default": "${openshift_compute_node_on_vmware.disk1_size}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Compute Node Disk 1 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_disk2_enable",
-      "default": "true",
+      "name": "compute_node_disk2_enable",
+      "default": "${openshift_compute_node_on_vmware.disk2_enable}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "compute_vm_disk2_enable",
       "hidden": true,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_disk2_keep_on_remove",
-      "default": "false",
+      "name": "compute_node_disk2_keep_on_remove",
+      "default": "${openshift_compute_node_on_vmware.disk2_keep_on_remove}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "compute_vm_disk2_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_disk2_size",
+      "name": "compute_node_disk2_size",
       "description": "Compute Node Disk Size Disk 2 (GB)",
-      "default": "100",
+      "default": "${openshift_compute_node_on_vmware.disk2_size}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Compute Node Disk 2 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "computevirtualmachine"
+      "group_name": "openshift_compute_node_on_vmware"
     },
     {
-      "name": "compute_vm_ipv4_gateway",
-      "description": "Compute Node IP Gateway Address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Compute Node IP Gateway",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "computevirtualmachine",
-      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
-      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway"
-    },
-    {
-      "name": "compute_vm_ipv4_prefix_length",
-      "description": "Integer value between 1 and 32 for the prefix length, CIDR, to use when statically assigning an IPv4 address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Compute Node IP Netmask (CIDR)",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "computevirtualmachine",
-      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$"
-    },
-    {
-      "name": "etcd_hostname_ip",
+      "name": "etcd_node_hostname_ip",
       "description": "Etcd Node Hostname and IP Address",
       "default": {
         "Hostname": "0.0.0.0"
@@ -273,138 +480,57 @@
       "label": "Etcd Node Hostname and IP Address",
       "hidden": false,
       "immutable": false,
-      "group_name": "etcdvirtualmachine"
+      "group_name": "openshift_etcd_node_on_vmware"
     },
     {
-      "name": "etcd_memory",
+      "name": "etcd_node_memory",
       "description": "Etcd Node Memory Allocation (mb)",
-      "default": "16384",
+      "default": "${openshift_etcd_node_on_vmware.memory}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "etcd Node Memory Allocation (mb)",
       "hidden": false,
       "immutable": false,
-      "group_name": "etcdvirtualmachine"
+      "group_name": "openshift_etcd_node_on_vmware"
     },
     {
-      "name": "etcd_vcpu",
+      "name": "etcd_node_vcpu",
       "description": "Etcd Node vCPU Allocation",
-      "default": "8",
+      "default": "${openshift_etcd_node_on_vmware.vcpu}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Etcd Node vCPU Allocation",
       "hidden": false,
       "immutable": false,
-      "group_name": "etcdvirtualmachine"
+      "group_name": "openshift_etcd_node_on_vmware"
     },
     {
-      "name": "etcd_vm_disk1_keep_on_remove",
-      "default": "false",
+      "name": "etcd_node_disk1_keep_on_remove",
+      "default": "${openshift_etcd_node_on_vmware.disk1_keep_on_remove}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "etcd_vm_disk1_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "etcdvirtualmachine"
+      "group_name": "openshift_etcd_node_on_vmware"
     },
     {
-      "name": "etcd_vm_disk1_size",
+      "name": "etcd_node_disk1_size",
       "description": "Etcd Node Disk Size Disk 1 (GB)",
-      "default": "200",
+      "default": "${openshift_etcd_node_on_vmware.disk1_size}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Etcd Node Disk 1 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "etcdvirtualmachine"
+      "group_name": "openshift_etcd_node_on_vmware"
     },
     {
-      "name": "etcd_vm_disk2_enable",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "etcd_vm_disk2_enable",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "etcdvirtualmachine"
-    },
-    {
-      "name": "etcd_vm_disk2_keep_on_remove",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "etcd_vm_disk2_keep_on_remove",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "etcdvirtualmachine"
-    },
-    {
-      "name": "etcd_vm_disk2_size",
-      "description": "Etcd Node Disk Size Disk 2 (GB)",
-      "default": "100",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Etcd Node Disk 2 Size (GB)",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "etcdvirtualmachine"
-    },
-    {
-      "name": "etcd_vm_ipv4_gateway",
-      "description": "Etcd Node IP Gateway Address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Etcd Node IP Gateway",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "etcdvirtualmachine",
-      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
-      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway"
-    },
-    {
-      "name": "etcd_vm_ipv4_prefix_length",
-      "description": "Integer value between 1 and 32 for the prefix length, CIDR, to use when statically assigning an IPv4 address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Etcd Node IP Netmask (CIDR)",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "etcdvirtualmachine",
-      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$"
-    },
-    {
-      "name": "os_private_ssh_key",
-      "default": "",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "os_private_ssh_key",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "os_public_ssh_key",
-      "default": "",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "os_public_ssh_key",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "infra_hostname_ip",
+      "name": "infra_node_hostname_ip",
       "description": "Infrastructure Node Hostname and IP Address",
       "default": {
         "Hostname": "0.0.0.0"
@@ -415,113 +541,54 @@
       "label": "Infrastructure Node Hostname and IP Address",
       "hidden": false,
       "immutable": false,
-      "group_name": "infravirtualmachine"
+      "group_name": "openshift_infra_node_on_vmware"
     },
     {
-      "name": "infra_memory",
+      "name": "infra_node_memory",
       "description": "Infrastructure Node Memory Allocation (mb)",
-      "default": "8192",
+      "default": "${openshift_infra_node_on_vmware.memory}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Infrastructure Node Memory Allocation (mb)",
       "hidden": false,
       "immutable": false,
-      "group_name": "infravirtualmachine"
+      "group_name": "openshift_infra_node_on_vmware"
     },
     {
-      "name": "infra_vcpu",
+      "name": "infra_node_vcpu",
       "description": "Infrastructure Node vCPU Allocation",
-      "default": "4",
+      "default": "${openshift_infra_node_on_vmware.vcpu}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Infrastructure Node vCPU Allocation",
       "hidden": false,
       "immutable": false,
-      "group_name": "infravirtualmachine"
+      "group_name": "openshift_infra_node_on_vmware"
     },
     {
-      "name": "infra_vm_disk1_keep_on_remove",
-      "default": "false",
+      "name": "infra_node_disk1_keep_on_remove",
+      "default": "${openshift_infra_node_on_vmware.disk1_keep_on_remove}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "infra_vm_disk1_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "infravirtualmachine"
+      "group_name": "openshift_infra_node_on_vmware"
     },
     {
-      "name": "infra_vm_disk1_size",
+      "name": "infra_node_disk1_size",
       "description": "Infrastructure Node Disk Size Disk 1 (GB)",
-      "default": "200",
+      "default": "${openshift_infra_node_on_vmware.disk1_size}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Infrastructure Node Disk 1 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "infravirtualmachine"
-    },
-    {
-      "name": "infra_vm_disk2_enable",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "infra_vm_disk2_enable",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "infravirtualmachine"
-    },
-    {
-      "name": "infra_vm_disk2_keep_on_remove",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "infra_vm_disk2_keep_on_remove",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "infravirtualmachine"
-    },
-    {
-      "name": "infra_vm_disk2_size",
-      "description": "Infrastructure Node Disk Size Disk 2 (GB)",
-      "default": "100",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Infrastructure Node Disk 2 Size (GB)",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "infravirtualmachine"
-    },
-    {
-      "name": "infra_vm_ipv4_gateway",
-      "description": "Infrastructure Node IP Gateway Address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Infrastructure Node IP Gateway",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "infravirtualmachine",
-      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
-      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway"
-    },
-    {
-      "name": "infra_vm_ipv4_prefix_length",
-      "description": "Integer value between 1 and 32 for the prefix length, CIDR, to use when statically assigning an IPv4 address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Infrastructure Node IP Netmask (CIDR)",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "infravirtualmachine",
-      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$"
+      "group_name": "openshift_infra_node_on_vmware"
     },
     {
       "name": "enable_lb",
@@ -544,10 +611,10 @@
           "default": true
           }
       ],
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_hostname_ip",
+      "name": "lb_node_hostname_ip",
       "description": "Load Balancer Node Hostname and IP Address",
       "default": {
         "Hostname": "0.0.0.0"
@@ -558,116 +625,57 @@
       "label": "Load Balancer Node Hostname and IP Address",
       "hidden": false,
       "immutable": false,
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_memory",
+      "name": "lb_node_memory",
       "description": "Load Balancer Node Memory Allocation (mb)",
-      "default": "16384",
+      "default": "${openshift_lb_node_on_vmware.memory}",
       "type": "string",
       "required": false,
       "secured": false,
       "label": "Load Balancer Node Memory Allocation (mb)",
       "hidden": false,
       "immutable": false,
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_vcpu",
+      "name": "lb_node_vcpu",
       "description": "Load Balancer Node vCPU Allocation",
-      "default": "8",
+      "default": "${openshift_lb_node_on_vmware.vcpu}",
       "type": "string",
       "required": false,
       "secured": false,
       "label": "Load Balancer Node vCPU Allocation",
       "hidden": false,
       "immutable": false,
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_vm_disk1_keep_on_remove",
-      "default": "false",
+      "name": "lb_node_disk1_keep_on_remove",
+      "default": "${openshift_lb_node_on_vmware.disk1_keep_on_remove}",
       "type": "string",
       "required": false,
       "secured": false,
       "label": "lb_vm_disk1_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_vm_disk1_size",
+      "name": "lb_node_disk1_size",
       "description": "Load Balancer Node Disk Size Disk 1 (GB)",
-      "default": "200",
+      "default": "${openshift_lb_node_on_vmware.disk1_size}",
       "type": "string",
       "required": false,
       "secured": false,
       "label": "Load Balancer Node Disk 1 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "lbvirtualmachine"
+      "group_name": "openshift_lb_node_on_vmware"
     },
     {
-      "name": "lb_vm_disk2_enable",
-      "default": "false",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "lb_vm_disk2_enable",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "lbvirtualmachine"
-    },
-    {
-      "name": "lb_vm_disk2_keep_on_remove",
-      "default": "false",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "lb_vm_disk2_keep_on_remove",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "lbvirtualmachine"
-    },
-    {
-      "name": "lb_vm_disk2_size",
-      "description": "Load Balancer Node Disk Size Disk 2 (GB)",
-      "default": "100",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "Load Balancer Node Disk 2 Size (GB)",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "lbvirtualmachine"
-    },
-    {
-      "name": "lb_vm_ipv4_gateway",
-      "description": "Load Balancer Node IP Gateway Address",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "Load Balancer Node IP Gateway",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "lbvirtualmachine",
-      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
-      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway"
-    },
-    {
-      "name": "lb_vm_ipv4_prefix_length",
-      "description": "Integer value between 1 and 32 for the prefix length, CIDR, to use when statically assigning an IPv4 address",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "Load Balancer Node IP Netmask (CIDR)",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "lbvirtualmachine",
-      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$"
-    },
-    {
-      "name": "master_hostname_ip",
+      "name": "master_node_hostname_ip",
       "description": "Master Node Hostname and IP Address",
       "default": {
         "Hostname": "0.0.0.0"
@@ -678,113 +686,54 @@
       "label": "Master Node Hostname and IP",
       "hidden": false,
       "immutable": false,
-      "group_name": "mastervirtualmachine"
+      "group_name": "openshift_master_node_on_vmware"
     },
     {
-      "name": "master_memory",
+      "name": "master_node_memory",
       "description": "Master Node Node Memory Allocation (mb)",
-      "default": "16384",
+      "default": "${openshift_master_node_on_vmware.memory}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Master Node Memory Allocation (mb)",
       "hidden": false,
       "immutable": false,
-      "group_name": "mastervirtualmachine"
+      "group_name": "openshift_master_node_on_vmware"
     },
     {
-      "name": "master_vcpu",
+      "name": "master_node_vcpu",
       "description": "Master Node vCPU Allocation",
-      "default": "8",
+      "default": "${openshift_master_node_on_vmware.vcpu}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Master Node vCPU Allocation",
       "hidden": false,
       "immutable": false,
-      "group_name": "mastervirtualmachine"
+      "group_name": "openshift_master_node_on_vmware"
     },
     {
-      "name": "master_vm_disk1_keep_on_remove",
-      "default": "false",
+      "name": "master_node_disk1_keep_on_remove",
+      "default": "${openshift_master_node_on_vmware.disk1_keep_on_remove}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "master_vm_disk1_keep_on_remove",
       "hidden": true,
       "immutable": false,
-      "group_name": "mastervirtualmachine"
+      "group_name": "openshift_master_node_on_vmware"
     },
     {
-      "name": "master_vm_disk1_size",
+      "name": "master_node_disk1_size",
       "description": "Master Node Disk Size Disk 1 (GB)",
-      "default": "200",
+      "default": "${openshift_master_node_on_vmware.disk1_size}",
       "type": "string",
       "required": true,
       "secured": false,
       "label": "Master Node Disk 1 Size (GB)",
       "hidden": false,
       "immutable": false,
-      "group_name": "mastervirtualmachine"
-    },
-    {
-      "name": "master_vm_disk2_enable",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "master_vm_disk2_enable",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "mastervirtualmachine"
-    },
-    {
-      "name": "master_vm_disk2_keep_on_remove",
-      "default": "false",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "master_vm_disk2_keep_on_remove",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "mastervirtualmachine"
-    },
-    {
-      "name": "master_vm_disk2_size",
-      "description": "Master Node Disk Size Disk 2 (GB)",
-      "default": "100",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Master Node Disk 2 Size (GB)",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "mastervirtualmachine"
-    },
-    {
-      "name": "master_vm_ipv4_gateway",
-      "description": "Master Node IP Gateway Address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Master Node IP Gateway",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "mastervirtualmachine",
-      "regex": "^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]).){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$",
-      "regexdesc": "Provide a Valid IP address for the Virtual Machine Gateway"
-    },
-    {
-      "name": "master_vm_ipv4_prefix_length",
-      "description": "Integer value between 1 and 32 for the prefix length, CIDR, to use when statically assigning an IPv4 address",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Master Node IP Netmask (CIDR)",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "mastervirtualmachine",
-      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$"
+      "group_name": "openshift_master_node_on_vmware"
     },
     {
       "name": "openshift_user",
@@ -795,7 +744,7 @@
       "label": "OpenShift Console Login Username",
       "hidden": false,
       "immutable": false,
-      "group_name": "generalvmtemplate"
+      "group_name": "rh_ocp"
     },
     {
       "name": "openshift_password",
@@ -806,7 +755,7 @@
       "label": "OpenShift Console Login Password",
       "hidden": false,
       "immutable": false,
-      "group_name": "generalvmtemplate"
+      "group_name": "rh_ocp"
     },
     {
       "name": "rh_user",
@@ -817,7 +766,7 @@
       "label": "Red Hat Account Username",
       "hidden": false,
       "immutable": false,
-      "group_name": "generalvmtemplate"
+      "group_name": "rh_ocp"
     },
     {
       "name": "rh_password",
@@ -828,163 +777,7 @@
       "label": "Red Hat Account Password",
       "hidden": false,
       "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_adapter_type",
-      "default": "vmxnet3",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "vm_adapter_type",
-      "hidden": true,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_clone_timeout",
-      "description": "The timeout, in minutes, to wait for the virtual machine clone to complete.",
-      "default": "30",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Virtual Machine Clone Timeout",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_disk1_datastore",
-      "description": "Virtual Machine Datastore Name - Disk 1",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Virtual Machine Datastore Name - Disk 1",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_disk2_datastore",
-      "description": "Virtual Machine Datastore Name - Disk 2",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Virtual Machine Datastore Name - Disk 2",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_dns_servers",
-      "description": "List of DNS servers for the virtual network adapter. For more than one DNS, the values can be entered by adding more fields.",
-      "type": "list",
-      "required": true,
-      "secured": false,
-      "label": "OpenShift DNS Servers",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_dns_suffixes",
-      "description": "Name resolution suffixes for the virtual network adapter",
-      "type": "list",
-      "required": true,
-      "secured": false,
-      "label": "OpenShift DNS Suffixes",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_domain",
-      "description": "OpenShift Virtual Machine's domain name",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "OpenShift Domain Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vsphere_datacenter",
-      "description": "The name of a Datacenter in which to launch the OpenShift.",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "vSphere DataCenter Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "cloud"
-    },
-    {
-      "name": "vsphere_resource_pool",
-      "description": "Name of the VMware resource pool the OpenShift cluster VMs will be deployed into.",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "vSphere Resource Pool Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "cloud"
-    },
-    {
-      "name": "vm_network_interface_label",
-      "description": "Name of the VMware network the OpenShift cluster VMs will be deployed into.",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "vSphere Network Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "cloud"
-    },
-    {
-      "name": "vm_folder",
-      "description": "Name of the vSphere Folder the OpenShift cluster VMs will be deployed into",
-      "type": "string",
-      "required": false,
-      "secured": false,
-      "label": "vSphere Folder Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "cloud"
-    },
-    {
-      "name": "vm_template",
-      "description": "Virtual Machine Template Name",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Virtual Machine Template Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_os_user",
-      "description": "The user name to use while configuring OpenShift.",
-      "default": "root",
-      "type": "string",
-      "required": true,
-      "secured": false,
-      "label": "Virtual Machine Template User Name",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
-    },
-    {
-      "name": "vm_os_password",
-      "description": "The user password to use while configuring OpenShift.",
-      "type": "string",
-      "required": true,
-      "secured": true,
-      "label": "Virtual Machine Template User Password",
-      "hidden": false,
-      "immutable": false,
-      "group_name": "generalvmtemplate"
+      "group_name": "rh_ocp"
     }
   ],
   "template_output_params": [
