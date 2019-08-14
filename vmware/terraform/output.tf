@@ -1,5 +1,5 @@
 output "openshift_url" {
-  value = "https://${element(keys(var.master_node_hostname_ip),0)}.${var.vm_domain}:8443"
+  value = "https://${element(keys(var.master_node_hostname_ip),0)}.${var.vm_domain_name}:8443"
 }
 
 output "openshift_user" {
