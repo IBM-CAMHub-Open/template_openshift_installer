@@ -1,7 +1,14 @@
-output "openshift_url" {
-  value = "https://${element(keys(var.master_node_hostname_ip),0)}.${var.vm_domain_name}:8443"
+locals {
+  fqdn = "${element(keys(var.master_node_hostname_ip),0)}.${var.vm_domain_name}"
 }
 
+output "openshift_url" {
+  value = "https://${local.fqdn}:8443"
+}
+
+output "cluster_name" {
+  value = "${replace(local.fqdn,".","-")}"
+}
 output "openshift_user" {
   value = "${var.openshift_user}"
 }
