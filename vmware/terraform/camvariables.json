@@ -341,8 +341,18 @@
       "type": "string",
       "required": true,
       "secured": false,
-      "label": "Enable GlusterFS",
+      "label": "Enable GlusterFS (need at least 3 compute nodes)",
       "hidden": false,
+      "options": [
+        {
+          "value": "true",
+          "label": "true"
+        },
+        {
+          "value": "false",
+          "label": "false"
+        }
+      ],
       "immutable": false,
       "group_name": "openshift_compute_node_on_vmware"
     },
