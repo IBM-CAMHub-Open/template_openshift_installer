@@ -768,7 +768,7 @@
   "template_output_params": [
     {
       "name": "cluster_name",
-      "type": "url",
+      "type": "string",
       "description": "OpenShift Cluster Name",
       "hidden": false,
       "label": "OpenShift Cluster Name",
