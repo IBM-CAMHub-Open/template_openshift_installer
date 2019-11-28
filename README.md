@@ -1,1 +1,0 @@
-# template_openshift_installer

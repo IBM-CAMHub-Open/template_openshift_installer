@@ -1,0 +1,61 @@
+{
+  "name": "OpenShift Container Platform Enterprise Installation",
+  "description": "This template will deploy an enterprise HA-ready version of OpenShift Container Platform",
+  "version": "4.2",
+  "imageUrl": "",
+  "image": "",
+  "type": "prebuilt",
+  "status": "active",
+  "manifest": {
+    "template_type": "Terraform",
+    "template_format": "HCL",
+    "template_provider": "VMware vSphere",
+    "template": {
+      "templateData": "",
+      "templateVariables": "",
+      "templateOutput": ""
+    },
+    "template_source": {
+      "githubRepoUrl": "",
+      "githubAccessToken": "",
+      "relativePathToTemplateFolder": "vmware/terraform",
+      "templateFileName": "main.tf"
+    }
+  },
+  "metadata": {
+    "displayName": "OpenShift Container Platform Enterprise Installation",
+    "providerDisplayName": "VMware vSphere",
+    "longDescription": "This template will deploy an enterprise, HA-ready version of OpenShift Container Platform",
+    "bullets": [{
+  "title": "Clouds",
+  "description": " VMware vSphere<br>"},
+{
+  "title": "Operating Systems Supported",
+  "description": "RHEL 7.6 on Infra node, RHCOS 4.2 on OCP cluster nodes<br>"},
+{
+  "title": "Topology",
+  "description": "Medium/HA<br>"},
+{
+  "title": "Software Deployed",
+  "description": "OpenShift<br>"},
+{
+  "title": "Default Virtual Machine Settings",
+  "description": " vCPU 8, Memory (GB) 16, Disk (GB) 400<br>"},
+{
+  "title": "Usage and Special Notes",
+  "description": ""
+}
+],
+    "featuredImageUrl": "",
+    "imageUrl": "",
+    "mediumImageUrl": "",
+    "smallImageUrl": "",
+    "documentationUrl": "",
+    "termsUrl": "",
+    "media": [
+    ]
+  },
+  "toolchain": {
+    "git": "https://github.com/ibmcam/cam-toolchain"
+  }
+}

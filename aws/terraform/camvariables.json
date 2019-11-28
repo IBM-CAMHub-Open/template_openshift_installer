@@ -1,0 +1,697 @@
+{
+  "output_datatypes": [
+    {
+      "name": "bastionhost",
+      "dataobject": {
+        "name": "${template_output_params.cluster_name}_BastionHost",
+        "attributes": [
+          {
+            "name": "bastion_host",
+            "value": "${template_output_params.bastion_public_ip}"
+          },
+          {
+            "name": "bastion_user",
+            "value": "ec2-user"
+          },
+          {
+            "name": "bastion_private_key",
+            "value": "${template_input_params.key_pair_private_key}"
+          },
+          {
+            "name": "bastion_port",
+            "value": "22"
+          },
+          {
+            "name": "bastion_password",
+            "value": ""
+          },
+          {
+            "name": "bastion_host_key",
+            "value": ""
+          }           
+        ]
+      }     
+    }
+  ],
+  "input_groups": [
+    {
+      "name": "AWS",
+      "label": "Enter AWS Information"
+    },
+    {
+      "name": "Redhat",
+      "label": "Enter Redhat Pull Secret"
+    },
+    {
+      "name": "Network",
+      "label": "Enter Network Configuration"
+    },
+    {
+      "name": "Bastion",
+      "label": "Enter Bastion Node Configuration"
+    },
+    {
+      "name": "Bootstrap",
+      "label": "Enter Bootstrap Node Configuration"
+    },
+    {
+      "name": "Control",
+      "label": "Enter Control Plane Configuration"
+    },
+    {
+      "name": "Compute",
+      "label": "Enter Compute Node Configuration"
+    }
+  ],
+  "output_groups": [],
+  "template_input_params": [
+    {
+      "name": "region",
+      "label": "Region",
+      "description": "AWS region to deploy your OpenShift cluster nodes. The AWS selected region should have at least 3 availability zones.",
+      "type": "string",
+      "options": [
+        {
+          "value": "us-east-1",
+          "label": "US East (N. Virginia)"
+        },
+        {
+          "value": "us-east-2",
+          "label": "US East (Ohio)",
+          "default": true
+        },
+        {
+          "value": "us-west-1",
+          "label": "US West (N. California)"
+        },
+        {
+          "value": "us-west-2",
+          "label": "US West (Oregon)"
+        },
+        {
+          "value": "ca-central-1",
+          "label": "Canada (Central)"
+        },
+        {
+          "value": "eu-west-1",
+          "label": "EU (Ireland)"
+        },
+        {
+          "value": "eu-central-1",
+          "label": "EU (Frankfurt)"
+        },
+        {
+          "value": "eu-west-2",
+          "label": "EU (London)"
+        },
+        {
+          "value": "ap-northeast-1",
+          "label": "Asia Pacific (Tokyo)"
+        },
+        {
+          "value": "ap-northeast-2",
+          "label": "Asia Pacific (Seoul)"
+        },
+        {
+          "value": "ap-southeast-1",
+          "label": "Asia Pacific (Singapore)"
+        },
+        {
+          "value": "ap-southeast-2",
+          "label": "Asia Pacific (Sydney)"
+        },
+        {
+          "value": "ap-south-1",
+          "label": "Asia Pacific (Mumbai)"
+        },
+        {
+          "value": "sa-east-1",
+          "label": "South America (São Paulo)"
+        }
+      ],
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "availability_zones",
+      "label": "Availability Zones",
+      "description": "The availability zone letter identifier in the above selected region. True high availability should have at least 3 availability zones.",
+      "type": "list",
+      "default": [
+        "a",
+        "b",
+        "c"
+      ],
+      "validation": "",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "key_pair_name",
+      "label": "Key Pair Name",
+      "description": "Name of the EC2 key pair.",
+      "type": "string",
+      "group_name": "AWS",
+      "required": false,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "key_pair_private_key",
+      "label": "Key Pair Private Key",
+      "description": "Base64 encoded private key file contents of the EC2 key pair.",
+      "type": "string",
+      "group_name": "AWS",
+      "required": false,
+      "secured": true,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false,
+      "regex": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+      "regexdesc": "Enter a valid base64 encoded text. Base64 encoded text contains alphanumeric characters and equals symbol as padding."
+    },
+    {
+      "name": "s3_bucket",
+      "label": "S3 Bucket",
+      "description": "The s3 bucket name that will store the ignition files required for OpenShift cluster nodes.",
+      "type": "string",
+      "group_name": "AWS",
+      "required": false,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "redhat_pull_secret",
+      "label": "Redhat Pull Secret (base64 encoded)",
+      "description": "Base64 encoded Redhat Pull Secret. Used to pull OpenShift related install files.",
+      "type": "string",
+      "group_name": "Redhat",
+      "required": true,
+      "secured": true,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false,
+      "regex": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+      "regexdesc": "Enter a valid base64 encoded text. Base64 encoded text contains alphanumeric characters and equals symbol as padding."
+    },
+    {
+      "name": "cluster_name",
+      "label": "Cluster Name",
+      "description": "OpenShift cluster prefix. Used to prefix a randon string used to name and tag VPC and other AWS resources created for OpenShift nodes.",
+      "type": "string",
+      "default": "ocp-cluster",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "domain_name",
+      "label": "Public Domain Name",
+      "description": "The domain entered must be in the Route53 public hosted zone.",
+      "type": "string",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "vpc_cidr",
+      "label": "VPC CIDR",
+      "description": "The CIDR block for the VPC",
+      "type": "string",
+      "default": "10.0.0.0/16",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "public_subnet_cidrs",
+      "label": "Public Subnet CIDRs",
+      "description": "Used for the bastion, bootstrap nodes and the public facing load balancers. You must provide one for each availability zone.",
+      "type": "list",
+      "default": [
+        "10.0.10.0/24",
+        "10.0.11.0/24",
+        "10.0.12.0/24"
+      ],
+      "validation": "",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "private_subnet_cidrs",
+      "label": "Private Subnet CIDRs",
+      "description": "Used for the OPC cluster nodes, and private load balancers. You must provide one for each availability zone.",
+      "type": "list",
+      "default": [
+        "10.0.20.0/24",
+        "10.0.21.0/24",
+        "10.0.22.0/24"
+      ],
+      "validation": "",
+      "group_name": "Network",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bastion_node_count",
+      "label": "Create a New or Destroy the Existing Bastion",
+      "description": "Create or destroy bastion for the OpenShift install.  Required for installation. Can be removed after if no longer required after successful installation.",
+      "type": "string",
+      "group_name": "Bastion",
+      "options": [
+        {
+          "value": "1",
+          "label": "Create",
+          "default": "true"
+        },
+        {
+          "value": "0",
+          "label": "Destroy"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bastion_instance_type",
+      "label": "Instance Type",
+      "description": "List of Recommended Instance types.",
+      "type": "string",
+      "group_name": "Bastion",
+      "options": [
+        {
+          "value": "t2.micro",
+          "label": "t2.micro",
+          "default": "true"
+        },
+        {
+          "value": "t2.small",
+          "label": "t2.small",
+          "default": "true"
+        },
+        {
+          "value": "t2.medium",
+          "label": "t2.medium"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bastion_volume_size",
+      "label": "Disk Size (GiB)",
+      "description": "Enter size of root disk in gibibytes",
+      "type": "string",
+      "default": "50",
+      "group_name": "Bastion",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bootstrap_node_count",
+      "label": "Create a New or Destroy the Existing Bootstrap",
+      "description": "Create or destroy bootstrap for the OpenShift install.  Required for installation.  Should be removed after successful installion.",
+      "type": "string",
+      "group_name": "Bootstrap",
+      "options": [
+        {
+          "value": "1",
+          "label": "Create",
+          "default": "true"
+        },
+        {
+          "value": "0",
+          "label": "Destroy"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bootstrap_instance_type",
+      "label": "Instance Type",
+      "description": "List of Recommended Instance types.",
+      "type": "string",
+      "group_name": "Bootstrap",
+      "options": [
+        {
+          "value": "i3.large",
+          "label": "i3.large",
+          "default": "true"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "bootstrap_volume_size",
+      "label": "Disk Size (GiB)",
+      "description": "Enter size of root disk in gibibytes.",
+      "type": "string",
+      "default": "120",
+      "group_name": "Bootstrap",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "master_node_count",
+      "label": "Number of Master Nodes",
+      "description": "Create Master Nodes (minimum of 3 required).",
+      "type": "string",
+      "default": "3",
+      "group_name": "Control",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false,
+      "regex": "[3-9]|[1-9][0-9]|100",
+      "regexdesc": "Enter a valid number of master nodes - between 3 and 100."
+    },
+    {
+      "name": "master_instance_type",
+      "label": "Recommended Instance Type",
+      "description": "List of Recommended Instance types.",
+      "type": "string",
+      "group_name": "Control",
+      "options": [
+        {
+          "value": "m4.xlarge",
+          "label": "m4.xlarge",
+          "default": "true"
+        },
+        {
+          "value": "m5.xlarge",
+          "label": "m5.xlarge"
+        },
+        {
+          "value": "m4.2xlarge",
+          "label": "m4.2xlarge"
+        },
+        {
+          "value": "m4.4xlarge",
+          "label": "m4.4xlarge"
+        },
+        {
+          "value": "m4.8xlarge",
+          "label": "m4.8xlarge"
+        },
+        {
+          "value": "m4.10xlarge",
+          "label": "m4.10xlarge"
+        },
+        {
+          "value": "m4.16xlarge",
+          "label": "m4.16xlarge"
+        },
+        {
+          "value": "c4.2xlarge",
+          "label": "c4.2xlarge"
+        },
+        {
+          "value": "c4.4xlarge",
+          "label": "c4.4xlarge"
+        },
+        {
+          "value": "c4.8xlarge",
+          "label": "c4.8xlarge"
+        },
+        {
+          "value": "r4.xlarge",
+          "label": "r4.xlarge"
+        },
+        {
+          "value": "r4.2xlarge",
+          "label": "r4.2xlarge"
+        },
+        {
+          "value": "r4.4xlarge",
+          "label": "r4.4xlarge"
+        },
+        {
+          "value": "r4.8xlarge",
+          "label": "r4.8xlarge"
+        },
+        {
+          "value": "r4.16xlarge",
+          "label": "r4.16xlarge"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "master_volume_size",
+      "label": "Disk Size (GiB)",
+      "description": "Enter size of root disk in gibibytes.",
+      "type": "string",
+      "default": "120",
+      "group_name": "Control",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "worker_node_count",
+      "label": "Number of Worker Nodes",
+      "description": "Create Worker Nodes (minimum of 2 required).",
+      "type": "string",
+      "default": "2",
+      "group_name": "Compute",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    },
+    {
+      "name": "worker_instance_type",
+      "label": "Recommended Instance Type",
+      "description": "List of Recommended Instance types.",
+      "type": "string",
+      "group_name": "Compute",
+      "options": [
+        {
+          "value": "m4.large",
+          "label": "m4.large",
+          "default": "true"
+        },
+        {
+          "value": "m4.xlarge",
+          "label": "m4.xlarge"
+        },
+        {
+          "value": "m5.xlarge",
+          "label": "m5.xlarge"
+        },
+        {
+          "value": "m4.2xlarge",
+          "label": "m4.2xlarge"
+        },
+        {
+          "value": "m4.4xlarge",
+          "label": "m4.4xlarge"
+        },
+        {
+          "value": "m4.8xlarge",
+          "label": "m4.8xlarge"
+        },
+        {
+          "value": "m4.10xlarge",
+          "label": "m4.10xlarge"
+        },
+        {
+          "value": "m4.16xlarge",
+          "label": "m4.16xlarge"
+        },
+        {
+          "value": "c4.large",
+          "label": "c4.large"
+        },
+        {
+          "value": "c4.xlarge",
+          "label": "c4.xlarge"
+        },
+        {
+          "value": "c4.2xlarge",
+          "label": "c4.2xlarge"
+        },
+        {
+          "value": "c4.4xlarge",
+          "label": "c4.4xlarge"
+        },
+        {
+          "value": "c4.8xlarge",
+          "label": "c4.8xlarge"
+        },
+        {
+          "value": "r4.large",
+          "label": "r4.large"
+        },
+        {
+          "value": "r4.xlarge",
+          "label": "r4.xlarge"
+        },
+        {
+          "value": "r4.2xlarge",
+          "label": "r4.2xlarge"
+        },
+        {
+          "value": "r4.4xlarge",
+          "label": "r4.4xlarge"
+        },
+        {
+          "value": "r4.8xlarge",
+          "label": "r4.8xlarge"
+        },
+        {
+          "value": "r4.16xlarge",
+          "label": "r4.16xlarge"
+        }
+      ],
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false,
+      "regex": "[2-9]|[1-9][0-9]|100",
+      "regexdesc": "Enter a valid number of master nodes - between 2 and 100."
+    },
+    {
+      "name": "worker_volume_size",
+      "label": "Disk Size (GiB)",
+      "description": "Enter size of root disk in gibibytes",
+      "type": "string",
+      "default": "120",
+      "group_name": "Compute",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": false
+    }
+  ],
+  "template_output_params": [
+    {
+      "name": "cluster_name",
+      "label": "OpenShift Cluster Name",
+      "description": "Generated OpenShift Cluster Name (Provided cluster name with a random character string attached).",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    },
+    {
+      "name": "bastion_public_ip",
+      "label": "Bastion Host IP",
+      "description": "Bastion Host IP address",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    },
+    {
+      "name": "bootstrap_public_ip",
+      "label": "Bootstrap Host IP",
+      "description": "Bootstrap Host IP address",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    },
+    {
+      "name": "ocp_web_console",
+      "label": "OpenShift Web Console",
+      "description": " URL that can be logged into using the install provided user and password.",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "url"
+    },
+    {
+      "name": "kubeadmin_user",
+      "label": "kubeadmin User",
+      "description": "Default user to log into the OpenShift web-console.",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    },
+    {
+      "name": "kubeadmin_password",
+      "label": "kubeadmin Password",
+      "description": "Default password for the kubeadmin user.",
+      "group_name": "",
+      "secured": true,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    },
+    {
+      "name": "kubeconfig",
+      "label": "kubeconfig",
+      "description": "To access the cluster as the system:admin user when using 'oc', Save the kubeconfig output to a file, then run 'export KUBECONFIG=<kubeconfig_file>",
+      "group_name": "",
+      "secured": false,
+      "hidden": false,
+      "shortname": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+    "name": "Red Hat Openshift Container Platform Cluster on Amazon Web Services",
+    "description": "This template will deploy Red Hat Openshift Container Platform in a high availability configuration",
+    "version": "1.0",
+    "imageUrl": "",
+    "image": "",
+    "type": "prebuilt",
+    "status": "active",
+    "manifest": {
+      "template_type": "Terraform",
+      "template_format": "HCL",
+      "template_provider": "Amazon EC2",
+      "template": {
+        "templateData": "",
+        "templateVariables": "",
+        "templateOutput": ""
+      },
+      "template_source": {
+        "githubRepoUrl": "",
+        "githubAccessToken": "",
+        "relativePathToTemplateFolder": "templates",
+        "templateFileName": ""
+      }
+    },
+    "metadata": {
+      "displayName": "Red Hat Openshift Container Platform Cluster in AWS",
+      "providerDisplayName": "Amazon EC2",
+      "longDescription": "This template will deploy Red Hat Openshift Container Platform in a high availability configuration on Amazon Web Services (AWS) EC2 instances",
+      "bullets": [{
+    "title": "Clouds",
+    "description": " Amazon Web Services (AWS)<br>"},
+{
+    "title": "Operating Systems Supported",
+    "description": "Red Hat Enterprise Linux CoreOS 4.1 (control plane and compute nodes)<br>Red Hat Enterprise Linux 7 (bastion)"},
+{
+    "title": "Topology",
+    "description": "3 control plane nodes, 2 compute nodes<br>"},
+{
+    "title": "Software Deployed",
+    "description": "Red Hat Openshift Container Platform Cluster<br>"},
+{
+    "title": "Default Virtual Machine Settings",
+    "description": "Control Plane - vCPU: 4, Memory (GiB): 16, Disk (GiB): 120<br>Compute Nodes - vCPU: 2, Memory (GiB): 8, Disk (GiB): 120<br>"},
+{
+    "title": "Usage and Special Notes",
+    "description": "1. The user is responsible for obtaining appropriate software licenses and downloads prior to template deployment.<br>2. Documentationf for OpenShift Container Platform 4.2 - <a href=\"https://docs.openshift.com/container-platform/4.2/welcome/index.html\" target=\"_blank\">https://docs.openshift.com/container-platform/4.2/welcome/index.html</a><br>3. IBM Support Portal - <a href=\"https://www.ibm.com/support/home/\" target=\"_blank\">https://www.ibm.com/support/home/</a><br>"
+}
+],
+      "featuredImageUrl": "",
+      "imageUrl": "",
+      "mediumImageUrl": "",
+      "smallImageUrl": "",
+      "documentationUrl": "",
+      "termsUrl": "",
+      "media": [
+      ]
+    },
+    "toolchain": {
+      "git": "https://github.com/ibmcam/cam-toolchain"
+    }
+}
