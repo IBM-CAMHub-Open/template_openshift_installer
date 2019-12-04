@@ -225,13 +225,13 @@ variable "pullsecret" {
 }
 
 variable "dhcp_ip_range_start"{ 
-  default = "192.168.1.220"     
+  default = "192.168.1.2"     
   type = "string"  
   description = "IP address for the start of the DHCP IP address range"
 }
 
 variable "dhcp_ip_range_end"{
-  default = "192.168.1.230"
+  default = "192.168.1.254"
   type = "string"
   description = "IP address for the end of the DHCP IP address range" 
 }
