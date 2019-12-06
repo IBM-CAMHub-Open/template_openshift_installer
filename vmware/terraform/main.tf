@@ -525,3 +525,20 @@ module "complete_install" {
   bastion_password    = "${var.bastion_password}"       
   dependsOn            = "${module.config_image_registry.dependsOn}"
 }
+
+module "set_permanent_ip" {
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=4.2//vmware/set_permanent_ip" 
+
+  vm_ipv4_address = "${var.infranode_ip}"
+  vm_os_private_key    = "${length(var.infra_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.infra_private_ssh_key)}"}"
+  vm_os_user           = "${var.infranode_vm_os_user}"
+  vm_os_password       = "${var.infranode_vm_os_password}"
+  cluster_ipv4_addresses = "${join(",", concat(flatten(module.compute.ip),flatten(module.control_plane.ip)))}"
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"       
+  dependsOn            = "${module.complete_install.dependsOn}"
+}
