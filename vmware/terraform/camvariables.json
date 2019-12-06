@@ -686,7 +686,7 @@
       "label": "Console Password for kubeadmin",
       "description": "",
       "type": "string",
-      "secured": false,
+      "secured": true,
       "hidden": false,
       "immutable": false
     },    
