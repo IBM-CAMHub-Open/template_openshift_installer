@@ -2,6 +2,14 @@ output "cluster_url" {
 	value = "${module.complete_install.console}"
 }
 
+output "oauth_url" {
+	value = "https://oauth-openshift.apps.${var.clustername}.${var.ocp_cluster_domain}"
+}
+
+output "api_url" {
+	value = "https://api.${var.clustername}.${var.ocp_cluster_domain}:6443"
+}
+
 output "kubeadmin_password" {
 	value = "${module.complete_install.password}"
 }

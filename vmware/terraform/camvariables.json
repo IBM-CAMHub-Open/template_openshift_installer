@@ -682,6 +682,24 @@
       "immutable": false
     },
     {
+      "name": "oauth_url",
+      "label": "OCP OAuth URL",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },  
+    {
+      "name": "api_url",
+      "label": "OCP Server API URL",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },
+    {
       "name": "kubeadmin_password",
       "label": "Console Password for kubeadmin",
       "description": "",
