@@ -35,52 +35,6 @@ resource "null_resource" "create-temp-random-dir" {
   }
 }
 
-module "deployVM_infra" {
-  source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//vmware_provision"
-
-  count  = "${length(keys(var.infra_node_hostname_ip))}"
-  
-  #######
-  datacenter              = "${var.datacenter}"
-  resource_pool           = "${var.resource_pool}"
-  enable_vm               = "true"
-  vm_vcpu                 = "${var.infra_node_vcpu}"                                                                                                           // vm_number_of_vcpu
-  vm_name                 = "${keys(var.infra_node_hostname_ip)}"
-  vm_memory               = "${var.infra_node_memory}"
-  vm_image_template       = "${var.vm_image_template}"
-  vm_os_password          = "${var.vm_os_password}"
-  vm_os_user              = "${var.vm_os_user}"
-  vm_domain_name          = "${var.vm_domain_name}"
-  vm_folder               = "${var.vm_folder}"
-  vm_private_ssh_key      = "${length(var.vm_os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}"     : "${base64decode(var.vm_os_private_ssh_key)}"}"
-  vm_public_ssh_key       = "${length(var.vm_os_public_ssh_key)  == 0 ? "${tls_private_key.generate.public_key_openssh}"  : "${var.vm_os_public_ssh_key}"}"
-  network                 = "${var.network}"
-  vm_ipv4_gateway         = "${var.vm_ipv4_gateway}"
-  vm_ipv4_address         = "${values(var.infra_node_hostname_ip)}"
-  vm_ipv4_netmask         = "${var.vm_ipv4_netmask}"
-  adapter_type            = "${var.adapter_type}"
-  vm_disk1_size           = "${var.infra_node_disk1_size}"
-  vm_disk1_datastore      = "${var.datastore}"
-  vm_disk1_keep_on_remove = "${var.infra_node_disk1_keep_on_remove}"
-  vm_disk2_enable         = "false"
-  vm_disk2_size           = "0"
-  vm_disk2_datastore      = "${var.datastore}"
-  vm_disk2_keep_on_remove = "false"
-  dns_servers             = "${var.dns_servers}"
-  dns_suffixes            = "${var.dns_suffixes}"
-  vm_clone_timeout        = "${var.vm_clone_timeout}"
-  random                  = "${random_string.random-dir.result}"
-
-  #######
-  bastion_host            = "${var.bastion_host}"
-  bastion_user            = "${var.bastion_user}"
-  bastion_private_key     = "${var.bastion_private_key}"
-  bastion_port            = "${var.bastion_port}"
-  bastion_host_key        = "${var.bastion_host_key}"
-  bastion_password        = "${var.bastion_password}"    
-  
-}
-
 module "deployVM_master" {
   source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//vmware_provision"
 
@@ -161,6 +115,7 @@ module "deployVM_etcd" {
   dns_suffixes            = "${var.dns_suffixes}"
   vm_clone_timeout        = "${var.vm_clone_timeout}"
   random                  = "${random_string.random-dir.result}"
+  dependsOn               = "${module.deployVM_master.dependsOn}"
   
   #######
   bastion_host            = "${var.bastion_host}"
@@ -206,6 +161,7 @@ module "deployVM_compute" {
   dns_suffixes            = "${var.dns_suffixes}"
   vm_clone_timeout        = "${var.vm_clone_timeout}"
   random                  = "${random_string.random-dir.result}"
+  dependsOn               = "${module.deployVM_master.dependsOn}"
   #######
   bastion_host            = "${var.bastion_host}"
   bastion_user            = "${var.bastion_user}"
@@ -213,6 +169,53 @@ module "deployVM_compute" {
   bastion_port            = "${var.bastion_port}"
   bastion_host_key        = "${var.bastion_host_key}"
   bastion_password        = "${var.bastion_password}"      
+}
+
+module "deployVM_infra" {
+  source = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=3.11//vmware_provision"
+
+  count  = "${length(keys(var.infra_node_hostname_ip))}"
+  
+  #######
+  datacenter              = "${var.datacenter}"
+  resource_pool           = "${var.resource_pool}"
+  enable_vm               = "true"
+  vm_vcpu                 = "${var.infra_node_vcpu}"                                                                                                           // vm_number_of_vcpu
+  vm_name                 = "${keys(var.infra_node_hostname_ip)}"
+  vm_memory               = "${var.infra_node_memory}"
+  vm_image_template       = "${var.vm_image_template}"
+  vm_os_password          = "${var.vm_os_password}"
+  vm_os_user              = "${var.vm_os_user}"
+  vm_domain_name          = "${var.vm_domain_name}"
+  vm_folder               = "${var.vm_folder}"
+  vm_private_ssh_key      = "${length(var.vm_os_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}"     : "${base64decode(var.vm_os_private_ssh_key)}"}"
+  vm_public_ssh_key       = "${length(var.vm_os_public_ssh_key)  == 0 ? "${tls_private_key.generate.public_key_openssh}"  : "${var.vm_os_public_ssh_key}"}"
+  network                 = "${var.network}"
+  vm_ipv4_gateway         = "${var.vm_ipv4_gateway}"
+  vm_ipv4_address         = "${values(var.infra_node_hostname_ip)}"
+  vm_ipv4_netmask         = "${var.vm_ipv4_netmask}"
+  adapter_type            = "${var.adapter_type}"
+  vm_disk1_size           = "${var.infra_node_disk1_size}"
+  vm_disk1_datastore      = "${var.datastore}"
+  vm_disk1_keep_on_remove = "${var.infra_node_disk1_keep_on_remove}"
+  vm_disk2_enable         = "false"
+  vm_disk2_size           = "0"
+  vm_disk2_datastore      = "${var.datastore}"
+  vm_disk2_keep_on_remove = "false"
+  dns_servers             = "${var.dns_servers}"
+  dns_suffixes            = "${var.dns_suffixes}"
+  vm_clone_timeout        = "${var.vm_clone_timeout}"
+  random                  = "${random_string.random-dir.result}"
+  dependsOn               = "${module.deployVM_master.dependsOn}"
+
+  #######
+  bastion_host            = "${var.bastion_host}"
+  bastion_user            = "${var.bastion_user}"
+  bastion_private_key     = "${var.bastion_private_key}"
+  bastion_port            = "${var.bastion_port}"
+  bastion_host_key        = "${var.bastion_host_key}"
+  bastion_password        = "${var.bastion_password}"    
+  
 }
 
 module "deployVM_lb" {
@@ -250,6 +253,7 @@ module "deployVM_lb" {
   dns_suffixes            = "${var.dns_suffixes}"
   vm_clone_timeout        = "${var.vm_clone_timeout}"
   random                  = "${random_string.random-dir.result}"
+  dependsOn               = "${module.deployVM_master.dependsOn}"
   #######
   bastion_host            = "${var.bastion_host}"
   bastion_user            = "${var.bastion_user}"
