@@ -1,13 +1,14 @@
 resource "null_resource" "depends_on" {
   triggers = {
-    depends_on = "${join("", var.depends_on)}"
+    depends_on = "${join(",", var.depends_on)}"
   }
 }
 
 resource "random_id" "complete_install" {
-  depends_on = [
-    "null_resource.depends_on",
-  ]
+  
+  keepers = {
+    depends_on = "${join(",", var.depends_on)}"
+  }
 
   byte_length = 1
 
@@ -29,7 +30,7 @@ resource "random_id" "complete_install" {
     inline = [
       "cd ${var.setup_dir}",
       "chmod +x ${var.setup_dir}/complete-install.sh",
-      "${var.setup_dir}/complete-install.sh ${var.setup_dir} ${var.total_nodes}",
+      "${var.setup_dir}/complete-install.sh ${var.setup_dir} ${var.total_nodes} ${join(",", var.depends_on)}",
     ]
   }
 }

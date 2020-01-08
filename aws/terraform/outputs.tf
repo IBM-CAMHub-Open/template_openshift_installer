@@ -14,11 +14,19 @@ output "ocp_web_console" {
   value = "https://console-openshift-console.apps.${local.cluster_name}.${var.domain_name}"
 }
 
-output "kubeadmin_user" {
+output "ocp_api_url" {
+  value = "https://api.${local.cluster_name}.${var.domain_name}:6443"
+}
+
+output "ocp_oauth_url" {
+  value = "https://oauth-openshift.apps.${local.cluster_name}.${var.domain_name}"
+}
+
+output "admin_user" {
   value = "kubeadmin"
 }
 
-output "kubeadmin_password" {
+output "admin_password" {
   value = "${module.complete_install.get_kubeadmin_password}"
 }
 

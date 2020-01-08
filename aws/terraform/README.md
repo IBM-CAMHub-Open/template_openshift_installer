@@ -68,8 +68,8 @@ In your IBM Cloud Automation Manager navigate to Library > Templates > Starterpa
 | Bastion Public IP | Bastion Host IP address.  If the Bastion was destroyed on a subsequent Plan/Apply it will contain the string "destroyed" |
 | Bootstrap Public IP | If the bootstrap was destroyed on a subsequent Plan/Apply it will contain the string "destroyed" |
 | OpenShift Web Console | URL that can be logged into using the install provided user and password. |
-| kubeadmin User | Default user to log into the OpenShift web-console. |
-| kubeadmin Password | Default password for the kubeadmin user. |
+| Admin User | Default user to log into the OpenShift web-console. |
+| Admin Password | Default password for the kubeadmin user. |
 | kubeconfig | To access the cluster as the system:admin user when using 'oc', Save the kubeconfig output to a file i.e. __kubeconfig__ then run 'export KUBECONFIG=__kubeconfig__ |
 
 ### Data Objects Created

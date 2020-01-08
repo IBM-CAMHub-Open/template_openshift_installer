@@ -156,7 +156,7 @@ module "complete_bootstrap" {
 module "complete_install" {
   source = "modules/complete-install"
 
-  depends_on        = ["${module.worker.worker_private_ips}"]
+  depends_on        = ["${module.worker.worker_private_ips}", "${module.master.master_private_ips}"]
   setup_dir         = "${module.setup_install.setup_dir}"
   bastion_public_ip = "${module.bastion.public_ip}"
   rhel_user         = "${var.rhel_user}"

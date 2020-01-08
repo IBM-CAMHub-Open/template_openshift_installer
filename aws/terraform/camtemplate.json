@@ -43,7 +43,7 @@
     "description": "Control Plane - vCPU: 4, Memory (GiB): 16, Disk (GiB): 120<br>Compute Nodes - vCPU: 2, Memory (GiB): 8, Disk (GiB): 120<br>"},
 {
     "title": "Usage and Special Notes",
-    "description": "1. The user is responsible for obtaining appropriate software licenses and downloads prior to template deployment.<br>2. Documentationf for OpenShift Container Platform 4.2 - <a href=\"https://docs.openshift.com/container-platform/4.2/welcome/index.html\" target=\"_blank\">https://docs.openshift.com/container-platform/4.2/welcome/index.html</a><br>3. IBM Support Portal - <a href=\"https://www.ibm.com/support/home/\" target=\"_blank\">https://www.ibm.com/support/home/</a><br>"
+    "description": "1. The user is responsible for obtaining appropriate software licenses and downloads prior to template deployment.<br>2. Documentation for OpenShift Container Platform 4.2 - <a href=\"https://docs.openshift.com/container-platform/4.2/welcome/index.html\" target=\"_blank\">https://docs.openshift.com/container-platform/4.2/welcome/index.html</a><br>3. IBM Support Portal - <a href=\"https://www.ibm.com/support/home/\" target=\"_blank\">https://www.ibm.com/support/home/</a><br>"
 }
 ],
       "featuredImageUrl": "",

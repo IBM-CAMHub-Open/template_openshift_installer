@@ -19,4 +19,6 @@ variable setup_dir {
   type = "string"
 }
 
-variable total_nodes {}
+variable total_nodes {
+  type = "string"
+}
