@@ -23,9 +23,9 @@ output "boot_ip" {
 }
 
 output "control_ip" {
-    value = "${module.control_plane.ip}"
+    value = "${module.get_control_ip.control_ip}"
 }
 
 output "compute_ip" {
-    value = "${module.compute.ip}"
+    value = "${module.get_compute_ip.compute_ip}"
 }

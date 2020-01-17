@@ -43,3 +43,19 @@ variable apps_internal_lb_target_group_arn {
 variable s3_bucket {
   type = "string"
 }
+
+variable "bastion_public_ip" {
+  type = "string"
+}
+
+variable "rhel_user" {
+  type = "string"
+}
+
+variable "vm_private_key" {
+  type = "string"
+}
+
+variable "setup_dir" {
+  type = "string"
+}

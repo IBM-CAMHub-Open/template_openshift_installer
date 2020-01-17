@@ -116,6 +116,11 @@ module "worker" {
   ami                               = "${var.rhcos_lookup[var.region]}"
   s3_bucket                         = "${var.s3_bucket}"
   security_group_ids                = ["${module.networking.security_group_default_id}", "${module.networking.security_group_worker_id}"]
+
+  bastion_public_ip = "${module.bastion.public_ip}"
+  rhel_user         = "${var.rhel_user}"
+  vm_private_key    = "${base64decode(var.key_pair_private_key)}"
+  setup_dir         = "${module.setup_install.setup_dir}"
 }
 
 module "get_aws_credentials" {
@@ -161,5 +166,5 @@ module "complete_install" {
   bastion_public_ip = "${module.bastion.public_ip}"
   rhel_user         = "${var.rhel_user}"
   vm_private_key    = "${base64decode(var.key_pair_private_key)}"
-  total_nodes       = "${var.master_node_count + var.worker_node_count}"
+  total_nodes       = "${length(module.worker.worker_private_ips) + length(module.master.master_private_ips)}"
 }

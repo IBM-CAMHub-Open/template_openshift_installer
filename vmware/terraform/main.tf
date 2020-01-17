@@ -257,6 +257,19 @@ module "bootstrap" {
   #use_static_mac   = "${var.use_static_mac}"
   #mac_address      = "${var.mac_address_boot}"
   dependsOn        = "${module.prepare_dhcp.dependsOn}"
+  instance_type				= "boot"
+  vm_ipv4_address = "${var.infranode_ip}"
+  vm_os_private_key_base64    = "${length(var.infra_private_ssh_key) == 0 ? "${base64encode(tls_private_key.generate.private_key_pem)}" : "${var.infra_private_ssh_key}"}"
+  vm_os_user           = "${var.infranode_vm_os_user}"
+  vm_os_password       = "${var.infranode_vm_os_password}"
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"    
+  domain			= "${var.ocp_cluster_domain}"
+  clustername 		= "${var.clustername}"    
 }
 
 module "HAProxy-config-boot" {
@@ -315,7 +328,39 @@ module "control_plane" {
    #use_static_mac   = "${var.use_static_mac}"
    #mac_address      = "${var.mac_address_control}"
    dependsOn        = "${module.wait_for_master_api_url.dependsOn}"
+   instance_type				= "control"
+   vm_ipv4_address = "${var.infranode_ip}"
+   vm_os_private_key_base64    = "${length(var.infra_private_ssh_key) == 0 ? "${base64encode(tls_private_key.generate.private_key_pem)}" : "${var.infra_private_ssh_key}"}"
+   vm_os_user           = "${var.infranode_vm_os_user}"
+   vm_os_password       = "${var.infranode_vm_os_password}"
+   bastion_host        = "${var.bastion_host}"
+   bastion_user        = "${var.bastion_user}"
+   bastion_private_key = "${var.bastion_private_key}"
+   bastion_port        = "${var.bastion_port}"
+   bastion_host_key    = "${var.bastion_host_key}"
+   bastion_password    = "${var.bastion_password}"     
+   domain			= "${var.ocp_cluster_domain}"
+   clustername 		= "${var.clustername}"  
  }
+ 
+ module "get_control_ip" {
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=4.2//vmware/get_permanent_ip" 
+
+  vm_ipv4_address = "${var.infranode_ip}"
+  vm_os_private_key    = "${length(var.infra_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.infra_private_ssh_key)}"}"
+  vm_os_user           = "${var.infranode_vm_os_user}"
+  vm_os_password       = "${var.infranode_vm_os_password}"
+  get_type			   = "control"
+  control_nodes = "${var.control_plane_count}"
+  compute_nodes = "${var.compute_count}"
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"       
+  dependsOn            = "${module.control_plane.dependsOn}"
+}
  
  module "set_dns_control" {
   source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=4.2//vmware/config_dns"
@@ -328,9 +373,9 @@ module "control_plane" {
   domain_name       = "${var.ocp_cluster_domain}"
   cluster_name      = "${var.clustername}"  
   cluster_ip        = "${var.infra_private_ipv4_address}"
-  node_ips          = "${join(",", flatten(module.control_plane.ip))}"
+  node_ips          = "${join(",", module.get_control_ip.control_ip)}"
   node_names        = "${join(",", flatten(module.control_plane.name))}"
-  dependsOn            = "${module.control_plane.dependsOn}"
+  dependsOn            = "${module.get_control_ip.dependsOn}"
   ## Access to optional bastion host
   bastion_host        = "${var.bastion_host}"
   bastion_user        = "${var.bastion_user}"
@@ -371,7 +416,7 @@ module "HAProxy-config-control" {
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"       
   configure_api_url   = "true"
-  vm_ipv4_controlplane_addresses = "${join(",", flatten(module.control_plane.ip))}"
+  vm_ipv4_controlplane_addresses = "${join(",", module.get_control_ip.control_ip)}"
   dependsOn            = "${module.monitor_controlplane_bootstrap.dependsOn}"    
 }
 
@@ -430,6 +475,38 @@ module "compute" {
    #use_static_mac   = "${var.use_static_mac}"
    #mac_address      = "${var.mac_address_compute}"
    dependsOn        = "${module.wait_for_worker_api_url.dependsOn}"
+   instance_type				= "compute"
+   vm_ipv4_address = "${var.infranode_ip}"
+   vm_os_private_key_base64    = "${length(var.infra_private_ssh_key) == 0 ? "${base64encode(tls_private_key.generate.private_key_pem)}" : "${var.infra_private_ssh_key}"}"
+   vm_os_user           = "${var.infranode_vm_os_user}"
+   vm_os_password       = "${var.infranode_vm_os_password}"
+   bastion_host        = "${var.bastion_host}"
+   bastion_user        = "${var.bastion_user}"
+   bastion_private_key = "${var.bastion_private_key}"
+   bastion_port        = "${var.bastion_port}"
+   bastion_host_key    = "${var.bastion_host_key}"
+   bastion_password    = "${var.bastion_password}"  
+   domain			= "${var.ocp_cluster_domain}"
+   clustername 		= "${var.clustername}"     
+}
+
+module "get_compute_ip" {
+  source               = "git::https://github.com/IBM-CAMHub-Open/template_openshift_modules.git?ref=4.2//vmware/get_permanent_ip" 
+
+  vm_ipv4_address = "${var.infranode_ip}"
+  vm_os_private_key    = "${length(var.infra_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.infra_private_ssh_key)}"}"
+  vm_os_user           = "${var.infranode_vm_os_user}"
+  vm_os_password       = "${var.infranode_vm_os_password}"
+  get_type			   = "compute"
+  control_nodes = "${var.control_plane_count}"
+  compute_nodes = "${var.compute_count}"
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
+  bastion_port        = "${var.bastion_port}"
+  bastion_host_key    = "${var.bastion_host_key}"
+  bastion_password    = "${var.bastion_password}"       
+  dependsOn            = "${module.compute.dependsOn}"
 }
 
 module "set_dns_compute" {
@@ -443,9 +520,9 @@ module "set_dns_compute" {
   domain_name       = "${var.ocp_cluster_domain}"
   cluster_name      = "${var.clustername}"  
   cluster_ip        = "${var.infra_private_ipv4_address}"
-  node_ips          = "${join(",", flatten(module.compute.ip))}"  
+  node_ips          = "${join(",", module.get_compute_ip.compute_ip)}"
   node_names        = "${join(",", flatten(module.compute.name))}"  
-  dependsOn            = "${module.compute.dependsOn}"
+  dependsOn            = "${module.get_compute_ip.dependsOn}"
   ## Access to optional bastion host
   bastion_host        = "${var.bastion_host}"
   bastion_user        = "${var.bastion_user}"
@@ -469,7 +546,7 @@ module "HAProxy-config-compute" {
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"       
   configure_app_url   = "true"
-  vm_ipv4_worker_addresses = "${join(",", flatten(module.compute.ip))}"
+  vm_ipv4_worker_addresses = "${join(",", module.get_compute_ip.compute_ip)}"
   dependsOn            = "${module.set_dns_compute.dependsOn}"
 }
 
@@ -490,6 +567,8 @@ module "complete_bootstrap" {
   ocp_domain			= "${var.ocp_cluster_domain}"
   ocp_cluster_name 		= "${var.clustername}"    
   number_nodes =    "${var.compute_count + var.control_plane_count}"
+  vm_ipv4_controlplane_addresses = "${join(",", module.get_compute_ip.control_ip)}"
+  vm_ipv4_worker_addresses = "${join(",", module.get_compute_ip.compute_ip)}"
 }
 
 module "config_image_registry" {
@@ -533,12 +612,12 @@ module "set_permanent_ip" {
   vm_os_private_key    = "${length(var.infra_private_ssh_key) == 0 ? "${tls_private_key.generate.private_key_pem}" : "${base64decode(var.infra_private_ssh_key)}"}"
   vm_os_user           = "${var.infranode_vm_os_user}"
   vm_os_password       = "${var.infranode_vm_os_password}"
-  cluster_ipv4_addresses = "${join(",", concat(flatten(module.compute.ip),flatten(module.control_plane.ip)))}"
+  cluster_ipv4_addresses = "${join(",", concat(flatten(module.get_compute_ip.compute_ip),flatten(module.get_control_ip.control_ip)))}"
   bastion_host        = "${var.bastion_host}"
   bastion_user        = "${var.bastion_user}"
   bastion_private_key = "${var.bastion_private_key}"
   bastion_port        = "${var.bastion_port}"
   bastion_host_key    = "${var.bastion_host_key}"
   bastion_password    = "${var.bastion_password}"       
-  dependsOn            = "${module.complete_install.dependsOn}"
+  dependsOn            = "${module.complete_install.dependsOn}.${module.HAProxy-config-compute.dependsOn}.${module.HAProxy-config-control.dependsOn}"
 }

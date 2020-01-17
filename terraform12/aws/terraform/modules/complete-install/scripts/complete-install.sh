@@ -2,7 +2,6 @@
 
 install_dir=${1}
 total_nodes=${2}
-node_ip_list=${3}
 
 export KUBECONFIG=${install_dir}/auth/kubeconfig
 

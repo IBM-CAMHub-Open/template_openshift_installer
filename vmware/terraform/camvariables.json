@@ -143,6 +143,7 @@
       "secured": false,
       "hidden": false,
       "immutable": false,
+      "immutable_after_create": true,
       "default": "${openshift42_control_plane_node_on_vmware.control_plane_count}",
       "group_name": "openshift_control_plane_node_on_vmware"
     },
