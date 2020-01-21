@@ -1,0 +1,749 @@
+{
+  "terraform_version": "~> 0.12.0",
+  "input_datatypes": [
+    {
+      "name": "bastionhost",
+      "label": "Bastion Data"
+    },
+    {
+      "name": "vsphere_managed_inventory_definition",
+      "label": "vSphere Managed Inventory Definition"
+    },    
+    {
+      "name": "openshift42_infra_node_on_vmware",
+      "label": "OpenShift Container Platform 4.2 Infrastructure Node on VMware"
+    },
+    {
+      "name": "openshift42_bootstrap_node_on_vmware",
+      "label": "OpenShift Container Platform 4.2 Bootstrap Node on VMware"
+    },
+    {
+      "name": "openshift42_control_plane_node_on_vmware",
+      "label": "OpenShift Container Platform 4.2 Control Plane Node on VMware"
+    },
+    {
+      "name": "openshift42_compute_node_on_vmware",
+      "label": "OpenShift Container Platform 4.2 Compute Node on VMware"
+    }
+  ], 
+  "output_datatypes": [
+  ],
+  "input_groups": [
+    {
+      "name": "openshift_container_platform_info",
+      "label": "OpenShift Container Platform"
+    },
+    {
+      "name": "openshift_infra_node_on_vmware",
+      "label": "OpenShift Infrastructure Node Settings"
+    },
+    {
+      "name": "openshift_bootstrap_node_on_vmware",
+      "label": "OpenShift Bootstrap Node Settings"
+    },
+    {
+      "name": "openshift_compute_node_on_vmware",
+      "label": "OpenShift Compute Node Settings"
+    },
+    {
+      "name": "openshift_control_plane_node_on_vmware",
+      "label": "OpenShift Control Plane Node Settings"
+    }
+  ],
+  "template_input_params": [
+    {
+      "name": "bastion_host",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion host for ssh proxy",
+      "default": "${bastionhost.bastion_host}",
+      "label": "Bastion host",
+      "secured": false,
+      "required": false
+    },
+    {
+      "name": "bastion_port",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion port for ssh proxy",
+      "default": "${bastionhost.bastion_port}",
+      "label": "Bastion port",
+      "secured": false,
+      "required": false
+    },
+    {
+      "name": "bastion_user",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion user for ssh proxy",
+      "default": "${bastionhost.bastion_user}",
+      "label": "Bastion user",
+      "secured": false,
+      "required": false
+    },
+    {
+      "name": "bastion_private_key",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion private key for ssh proxy",
+      "default": "${bastionhost.bastion_private_key}",
+      "label": "Bastion private key",
+      "secured": true,
+      "required": false
+    },  
+    {
+      "name": "bastion_password",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion user password for ssh proxy",
+      "default": "${bastionhost.bastion_password}",
+      "label": "Bastion user password",
+      "secured": true,
+      "required": false
+    },
+    {
+      "name": "bastion_host_key",
+      "type": "string",
+      "hidden": true,
+      "description": "Bastion host public key for ssh proxy",
+      "default": "${bastionhost.bastion_host_key}",
+      "label": "Bastion host key",
+      "secured": false,
+      "required": false
+    },
+    {
+      "name": "clustername",
+      "label": "OCP Cluster Name",
+      "type": "string",
+      "description": "A unique name that identifies each OCP cluster. The combination of this cluster name and the OCP domain name creates a cluster domain, that will be used by OCP cluster nodes and the URLs.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "compute_count",
+      "label": "Number of compute VMs to create",
+      "type": "string",
+      "description": "The number of compute VMs to create.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_compute_node_on_vmware.compute_count}",
+      "group_name": "openshift_compute_node_on_vmware"
+    },
+    {
+      "name": "control_plane_count",
+      "label": "Number of control plane VMs to create",
+      "type": "string",
+      "description": "The number of control plane VMs to create.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "immutable_after_create": true,      
+      "default": "${openshift42_control_plane_node_on_vmware.control_plane_count}",
+      "group_name": "openshift_control_plane_node_on_vmware"
+    },
+    {
+      "name": "infra_private_ssh_key",
+      "description": "The user private key to connect to the infrastructure virtual machine.",
+      "default": "${vsphere_managed_inventory_definition.vm_os_private_ssh_key}",
+      "type": "string",
+      "required": false,
+      "secured": true,
+      "label": "Infrastructure VM User Private Key (base64 encoded)",
+      "hidden": false ,
+      "immutable": false,
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infra_public_ssh_key",
+      "description": "The user public key to connect to the infrastructure virtual machine.",
+      "default": "${vsphere_managed_inventory_definition.vm_os_public_ssh_key}",
+      "type": "string",
+      "required": false,
+      "secured": false,
+      "label": "Infrastructure VM User Public Key",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_hostname",
+      "label": "Infrastructure Node Hostname",
+      "type": "string",
+      "description": "Infrastructure Node Hostname.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_ip",
+      "label": "Infrastructure Node Public IP Address",
+      "type": "string",
+      "description": "Infrastructure Node Public IP Address. This IP address must have a mapping to the OCP cluster app URL in your DNS or in your local etc hosts file.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_memory",
+      "label": "Infrastructure Node Memory Allocation (MB)",
+      "type": "string",
+      "description": "Infrastructure Node Memory Allocation (MB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_memory}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vcpu",
+      "label": "Infrastructure Node vCPU Allocation",
+      "type": "string",
+      "description": "Infrastructure Node vCPU Allocation.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vcpu}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk1_datastore",
+      "label": "Infrastructure Node Disk 1 datastore name",
+      "type": "string",
+      "description": "Infrastructure Node Disk 1 datastore name.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk1_datastore}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk1_keep_on_remove",
+      "label": "infranode_vm_disk1_keep_on_remove",
+      "type": "string",
+      "description": "",
+      "required": true,
+      "secured": false,
+      "hidden": true,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk1_keep_on_remove}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk1_size",
+      "label": "Infrastructure Node Disk Size Disk 1 (GB)",
+      "type": "string",
+      "description": "Infrastructure Node Disk Size Disk 1 (GB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk1_size}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk2_datastore",
+      "label": "Infrastructure Node Disk 2 datastore name",
+      "type": "string",
+      "description": "Infrastructure Node Disk 2 datastore name.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk2_datastore}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk2_enable",
+      "label": "infranode_vm_disk2_enable",
+      "type": "string",
+      "description": "",
+      "required": true,
+      "secured": false,
+      "hidden": true,
+      "immutable": false,
+      "default": "true",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk2_keep_on_remove",
+      "label": "infranode_vm_disk2_keep_on_remove",
+      "type": "string",
+      "description": "",
+      "required": true,
+      "secured": false,
+      "hidden": true,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk2_keep_on_remove}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_disk2_size",
+      "label": "Infrastructure Node Disk Size for OCP image registry NFS Storage (GB)",
+      "type": "string",
+      "description": "Infrastructure Node Disk Size Disk 2 (GB). This is used as NFS storage for OCP image registry.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_infra_node_on_vmware.infranode_vm_disk2_size}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_ipv4_gateway",
+      "label": "Infrastructure Node IPv4 Gateway",
+      "type": "string",
+      "description": "IPv4 Gateway Address for network customization on the virtual machine.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_ipv4_gateway}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_ipv4_prefix_length",
+      "label": "Infrastructure Node IPv4 Netmask (CIDR)",
+      "type": "string",
+      "description": "Integer value between 1 and 32 for the prefix length (CIDR) to use when statically assigning an IPv4 address",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_ipv4_netmask}",
+      "regex": "^([8-9]|[1-2][0-9]|3[0-2])$",
+      "regexdesc": "Provide an integer value between 1 and 32",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_os_user",
+      "label": "Infrastructure Node Template User Name",
+      "type": "string",
+      "description": "The user name to connect to the Infrastructure Node.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_os_user}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_os_password",
+      "label": "Infrastructure Node Template User Password",
+      "type": "string",
+      "description": "The user password to connect to the Infrastructure Node.",
+      "required": true,
+      "secured": true,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_os_password}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "infranode_vm_template",
+      "label": "Infrastructure Node OS Image Template Name (RHEL 7.4 or above template)",
+      "type": "string",
+      "description": "Infrastructure Node OS Image Template Name. If it is in a folder then include folder name as follows 'folder_name/image_template_name'",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_image_template}",
+      "group_name": "openshift_infra_node_on_vmware"
+    },
+    {
+      "name": "ocp_boot_vm_cpu",
+      "label": "Bootstrap Node vCPU Allocation",
+      "type": "string",
+      "description": "Bootstrap Node vCPU Allocation.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_bootstrap_node_on_vmware.ocp_boot_vm_cpu}",
+      "group_name": "openshift_bootstrap_node_on_vmware"
+    },
+    {
+      "name": "ocp_boot_vm_disk_size",
+      "label": "Bootstrap Node Disk Size (GB)",
+      "type": "string",
+      "description": "Bootstrap Node Disk Size (GB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_bootstrap_node_on_vmware.ocp_boot_vm_disk_size}",
+      "group_name": "openshift_bootstrap_node_on_vmware"
+    },
+    {
+      "name": "ocp_boot_vm_memory",
+      "label": "Bootstrap Node Memory Allocation (MB)",
+      "type": "string",
+      "description": "Bootstrap Node Memory Allocation (MB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_bootstrap_node_on_vmware.ocp_boot_vm_memory}",
+      "group_name": "openshift_bootstrap_node_on_vmware"
+    },
+    {
+      "name": "ocp_cluster_domain",
+      "label": "OCP Base Domain Name",
+      "type": "string",
+      "description": "OCP Base Domain Name. The combination of cluster name and this domain name creates what a cluster domain, that will be used by OCP cluster nodes and the URLs.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "ocp_compute_vm_cpu",
+      "label": "Compute Node Node vCPU Allocation",
+      "type": "string",
+      "description": "Compute Node Node vCPU Allocation.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_compute_node_on_vmware.ocp_compute_vm_cpu}",
+      "group_name": "openshift_compute_node_on_vmware"
+    },
+    {
+      "name": "ocp_compute_vm_disk_size",
+      "label": "Compute Node Disk Size (GB)",
+      "type": "string",
+      "description": "Compute Node Disk Size (GB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_compute_node_on_vmware.ocp_compute_vm_disk_size}",
+      "group_name": "openshift_compute_node_on_vmware"
+    },
+    {
+      "name": "ocp_compute_vm_memory",
+      "label": "Compute Node Memory Allocation (MB)",
+      "type": "string",
+      "description": "Compute Node Memory Allocation (MB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_compute_node_on_vmware.ocp_compute_vm_memory}",
+      "group_name": "openshift_compute_node_on_vmware"
+    },
+    {
+      "name": "ocp_control_vm_cpu",
+      "label": "Control Plane Node vCPU Allocation",
+      "type": "string",
+      "description": "Control Plane Node vCPU Allocation.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_control_plane_node_on_vmware.ocp_control_vm_cpu}",
+      "group_name": "openshift_control_plane_node_on_vmware"
+    },
+    {
+      "name": "ocp_control_vm_disk_size",
+      "label": "Control Plane Node Disk Size (GB)",
+      "type": "string",
+      "description": "Control Plane Node Disk Size (GB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_control_plane_node_on_vmware.ocp_control_vm_disk_size}",
+      "group_name": "openshift_control_plane_node_on_vmware"
+    },
+    {
+      "name": "ocp_control_vm_memory",
+      "label": "Control Plane Node Memory Allocation (MB)",
+      "type": "string",
+      "description": "Control Plane Node Memory Allocation (MB).",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${openshift42_control_plane_node_on_vmware.ocp_control_vm_memory}",
+      "group_name": "openshift_control_plane_node_on_vmware"
+    },
+    {
+      "name": "ocp_vm_template",
+      "label": "OCP Cluster VMs Template Name (RHCOS 4.2 image template)",
+      "type": "string",
+      "description": "Name of the VM template to clone to create VMs for the cluster.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "ocversion",
+      "label": "OCP Version",
+      "type": "string",
+      "description": "OCP Version",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "4.2.0",
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "pullsecret",
+      "label": "Base64 encoded OCP image pull secret",
+      "type": "string",
+      "description": "Base64 encoded OCP image pull secret. You can obtain this from your Red Hat account page.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_clone_timeout",
+      "label": "Virtual Machine Clone Timeout",
+      "type": "string",
+      "description": "The timeout, in minutes, to wait for the virtual machine clone to complete.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.vm_clone_timeout}",
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_dns_servers",
+      "label": "DNS Servers",
+      "type": "list",
+      "description": "A list of DNS servers to add on the virtual machine.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.dns_servers}",
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_dns_suffixes",
+      "label": "DNS Suffixes",
+      "type": "list",
+      "description": "A list of DNS search domains to add to the DNS configuration on the virtual machine.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "default": "${vsphere_managed_inventory_definition.dns_suffixes}",
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_domain_name",
+      "default":"${vsphere_managed_inventory_definition.vm_domain_name}",
+      "description": "Virtual machine domain name.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Virtual Machine Domain Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_folder",
+      "default":"${vsphere_managed_inventory_definition.vm_folder}",
+      "description": "vSphere folder name to create the infrastructure virtual vachine.",
+      "type": "string",
+      "required": false,
+      "secured": false,
+      "label": "Infrastructure VM Folder Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_private_adapter_type",
+      "default":"${vsphere_managed_inventory_definition.adapter_type}",
+      "description": "Private Network adapter type for infrastructure and OCP cluster VM vNIC Configuration",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Private Network Adapter Type for infrastructure and OCP cluster VM",
+      "hidden": true,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_private_network_interface_label",
+      "label": "Private Network name for infrastructure and OCP cluster VM",
+      "type": "string",
+      "description": "Private vSphere Network name for infrastructure and OCP cluster VM.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_public_adapter_type",
+      "default":"${vsphere_managed_inventory_definition.adapter_type}",
+      "description": "Public Network adapter type for for infrastructure VM vNIC Configuration",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Public Network Adapter Type for infrastructure VM",
+      "hidden": true,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vm_public_network_interface_label",
+      "default":"${vsphere_managed_inventory_definition.network}",
+      "description": "Public vSphere Network name for infrastructure VM.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Public Network name for infrastructure VM",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vsphere_cluster",
+      "label": "vSphere cluster Name",
+      "type": "string",
+      "description": "Name of the vSphere cluster.",
+      "required": true,
+      "secured": false,
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vsphere_datacenter",
+      "default":"${vsphere_managed_inventory_definition.datacenter}",
+      "description": "The name of a datacenter in which to create the virtual machine and other assets.",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Datacenter Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vsphere_datastore",
+      "default":"${vsphere_managed_inventory_definition.datastore}",
+      "description": "Virtual machine datastore name",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Datastore Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    },
+    {
+      "name": "vsphere_resource_pool",
+      "default":"${vsphere_managed_inventory_definition.resource_pool}",
+      "description": "Name of the default resource pool for the cluster. Must be specified as 'cluster_name/resource_pool'",
+      "type": "string",
+      "required": true,
+      "secured": false,
+      "label": "Resource Pool Name",
+      "hidden": false,
+      "immutable": false,
+      "group_name": "openshift_container_platform_info"
+    }
+  ],
+  "template_output_params": [
+    {
+      "name": "cluster_url",
+      "label": "OCP Console URL",
+      "description": "",
+      "type": "url",
+      "shortname": "OpenShift Cluster Console",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },
+    {
+      "name": "oauth_url",
+      "label": "OCP OAuth URL",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },  
+    {
+      "name": "api_url",
+      "label": "OCP Server API URL",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },
+    {
+      "name": "kubeadmin_password",
+      "label": "Console Password for kubeadmin",
+      "description": "",
+      "type": "string",
+      "secured": true,
+      "hidden": false,
+      "immutable": false
+    },    
+    {
+      "name": "boot_ip",
+      "label": "Boot Node IP Address",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },
+    {
+      "name": "control_ip",
+      "label": "Control plane Node IP Address",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },    
+    {
+      "name": "compute_ip",
+      "label": "Compute IP Address",
+      "description": "",
+      "type": "string",
+      "secured": false,
+      "hidden": false,
+      "immutable": false
+    },
+    {
+      "name": "cluster_prvt_key",
+      "label": "OCP Cluster VM Private Key (base64 encoded)",
+      "description": "",
+      "type": "string",
+      "secured": true,
+      "hidden": false,
+      "immutable": false
+    }
+  ]
+}
