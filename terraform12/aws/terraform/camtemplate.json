@@ -18,7 +18,7 @@
       "template_source": {
         "githubRepoUrl": "",
         "githubAccessToken": "",
-        "relativePathToTemplateFolder": "aws/terraform",
+        "relativePathToTemplateFolder": "terraform12/aws/terraform",
         "templateFileName": ""
       }
     },
