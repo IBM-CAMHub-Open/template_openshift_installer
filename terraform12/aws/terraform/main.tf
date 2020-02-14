@@ -139,6 +139,7 @@ module "setup_install" {
   s3_bucket             = var.s3_bucket
   master_node_count     = var.master_node_count
   vpc_cidr              = var.vpc_cidr
+  dependency_on         = module.bastion.dependency_on
 }
 
 module "complete_bootstrap" {

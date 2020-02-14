@@ -5,3 +5,8 @@ output "public_ip" {
   )
 }
 
+output "dependency_on" {
+  value       = null_resource.bastion_created.id
+  description = "Output Parameter set when the module execution is completed"
+}
+

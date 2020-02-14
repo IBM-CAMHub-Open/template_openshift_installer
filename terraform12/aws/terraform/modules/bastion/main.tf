@@ -21,3 +21,12 @@ resource "aws_instance" "bastion" {
   )
 }
 
+resource "null_resource" "bastion_created" {
+  depends_on = [
+    aws_instance.bastion
+  ]
+  provisioner "local-exec" {
+    command = "echo 'Bastion host created'"
+  }
+}
+

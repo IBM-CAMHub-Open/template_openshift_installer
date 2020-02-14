@@ -1,3 +1,7 @@
+variable "dependency_on" {
+  type    = string
+}
+
 variable "region" {
   type = string
 }

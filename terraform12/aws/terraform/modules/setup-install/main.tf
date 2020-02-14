@@ -1,3 +1,12 @@
+resource "null_resource" "dependency_on" {
+  triggers = {
+    dependency_on = var.dependency_on
+  }
+  provisioner "local-exec" {
+    command = "echo The dependsOn output is ${var.dependency_on}"
+  }  
+}
+
 locals {
   setup_dir = "/tmp/ocp-install"
 }
@@ -21,6 +30,7 @@ data "template_file" "install_config" {
 }
 
 resource "random_id" "setup_install" {
+  depends_on = [null_resource.dependency_on]
   byte_length = 1 # using random_id since null_resource cannot be used for module dependency hack
 
   connection {
