@@ -131,7 +131,7 @@ objects.
 | OCP Base Domain Name | Domain name for the OCP cluster. The combination of cluster name and this domain name creates a cluster domain, that will be used by OCP cluster nodes and the URLs. |
 | OCP Cluster VMs Template Name (RHCOS 4.2 image template) | Name of the VM template to clone to create VMs for the cluster. |
 | OCP Version | OCP Version. Default is 4.2.0 |
-| Base64 encoded OCP image pull secret | Base64 encoded OCP image pull secret. You can obtain this from your Red Hat account page. |
+| Base64 encoded OCP image pull secret | Base64 encoded OCP image pull secret. You can obtain this from your Red Hat account page. The encoded string must not have newline (use base64 -w0). |
 | Private Network name for infrastructure and OCP cluster VM | Private vSphere Network name for infrastructure and OCP cluster VM. |
 | vSphere cluster Name | vSphere cluster name inside the vSphere data center. |
 
@@ -146,7 +146,7 @@ The following parameters are output by the template.
 | Boot Node IP Address | IP of bootstrap node. This can be deleted after cluster is up. |
 | Control plane Node IP Address | IP address of control plane nodes. You can login to these VMs from Infrastructure node as user `core` and the key displayed in `OCP Cluster VM Private Key` |
 | Compute IP Address | IP address of compute nodes. You can login to these VMs from Infrastructure node as user `core` and the key displayed in `OCP Cluster VM Private Key` |
-| OCP Cluster VM Private Key (base64 encoded) | Base64 encoded private key to login to the boot, control and compute nodes from Infrastructure node as user `core` |
+| OCP Cluster VM Private Key (base64 encoded) | Base64 encoded private key to login to the boot, control and compute nodes from Infrastructure node as user `core`. The encoded string must not have newline (use base64 -w0). |
 
 
 

@@ -14,13 +14,13 @@ In your IBM Cloud Automation Manager navigate to Library > Templates > Starterpa
 | Parameter | Default Value | Description |
 | :-------------- |:--------------| :-----|
 | Key Pair Name |  | Name of the EC2 key pair. |
-| Key Pair Private Key |  | Base64 encoded private key file contents of the EC2 key pair. |
+| Key Pair Private Key |  | Base64 encoded private key file contents of the EC2 key pair. The encoded string must not have newline (use base64 -w0). |
 | S3 Bucket |  | The s3 bucket name that will store the ignition files required for OPENSHIFT cluster nodes.
 
 #### Redhat
 | Parameter | Default Value | Description |
 | :-------------- |:--------------| :-----|
-| Redhat Pull Secret | | Base64 encoded Redhat Pull Secret. Used to pull Openshift related install files.
+| Redhat Pull Secret | | Base64 encoded Redhat Pull Secret. Used to pull Openshift related install files. The encoded string must not have newline (use base64 -w0). |
 
 #### Network
 | Parameter | Default Value | Description |
