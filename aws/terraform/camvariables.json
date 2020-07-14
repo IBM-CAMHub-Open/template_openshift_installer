@@ -212,7 +212,7 @@
       "label": "Cluster Name",
       "description": "OpenShift cluster prefix. Used to prefix a randon string used to name and tag VPC and other AWS resources created for OpenShift nodes.",
       "type": "string",
-      "default": "ocp-cluster",
+      "default": "oc-cluster",
       "group_name": "Network",
       "required": true,
       "secured": false,
