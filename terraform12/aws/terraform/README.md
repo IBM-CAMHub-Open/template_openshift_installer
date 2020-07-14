@@ -27,7 +27,7 @@ In your IBM Cloud Automation Manager navigate to Library > Templates > Starterpa
 | :-------------- |:--------------| :-----|
 | Region | us-east-2 | AWS region to deploy your ICP cluster nodes. The AWS selected region should have at least 3 availability zones. |
 | Availability Zones | [a, b, c] | The availability zone letter identifier in the above selected region. The AWS selected region should have at least 3 availability zones. |
-| Cluster Name | openshift-cluster | OPENSHIFT cluster prefix. Used to prefix a randon string used to name and tag VPC and other AWS resources created for OPENSHIFT nodes. | 
+| Cluster Name | oc-cluster | OPENSHIFT cluster prefix. Used to prefix a randon string used to name and tag VPC and other AWS resources created for OPENSHIFT nodes. Cluster name can have lower case alphabets, numbers and dash. Must start with lower case alphabet and end with alpha-numeric character. Maximum length is 10 characters. | 
 | Public Domain Name |  | The domain entered must be in the Route53 public hosted zone. |
 | VPC CIDR | 10.0.0.0/16 | The CIDR block for the VPC | 
 | Public Subnet CIDRs | [10.0.10.0/24, 10.0.11.0/24, 10.0.12.0/24], | Used for the bastion, bootstrap nodes and the public facing load balancers. You must provide one for each availability zone. | 

@@ -127,7 +127,7 @@ objects.
 |------|-------------|
 | Infrastructure Node Hostname | Hostname of the infrastructure node. |
 | Infrastructure Node Public IP Address | Infrastructure Node Public IP Address. This IP address must have a mapping to the OCP cluster app URL in your DNS or in your local etc hosts file. |
-| OCP Cluster Name | A unique name that identifies each OCP cluster. The combination of this cluster name and the OCP domain name creates a cluster domain, that will be used by OCP cluster nodes and the URLs. |
+| OCP Cluster Name | A unique name that identifies each OCP cluster. The combination of this cluster name and the OCP domain name creates a cluster domain, that will be used by OCP cluster nodes and the URLs.  Cluster name can have lower case alphabets, numbers and dash. Must start with lower case alphabet and end with alpha-numeric character. Maximum length is 10 characters. |
 | OCP Base Domain Name | Domain name for the OCP cluster. The combination of cluster name and this domain name creates a cluster domain, that will be used by OCP cluster nodes and the URLs. |
 | OCP Cluster VMs Template Name (RHCOS 4.2 image template) | Name of the VM template to clone to create VMs for the cluster. |
 | OCP Version | OCP Version. Default is 4.2.0 |
