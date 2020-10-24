@@ -3,22 +3,6 @@ provider "vsphere" {
   allow_unverified_ssl = "true"
 }
 
-provider "random" {
-  version = "~> 1.0"
-}
-
-provider "local" {
-  version = "~> 1.1"
-}
-
-provider "null" {
-  version = "~> 1.0"
-}
-
-provider "tls" {
-  version = "~> 1.0"
-}
-
 #Get from ENV
 data "external" "get_vcenter_details" {
   program = ["/bin/bash", "./scripts/get_vcenter_details.sh"]
